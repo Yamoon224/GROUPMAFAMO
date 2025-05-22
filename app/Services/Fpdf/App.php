@@ -9,7 +9,7 @@ class App extends Fpdf
 {
     public function getQrCode() 
     {
-        $path = public_path('images/qrcode.svg');
+        $path = base_path('images/qrcode.svg');
 
         // Générer le QR code au format SVG
         QrCode::margin(2)
@@ -43,6 +43,16 @@ class App extends Fpdf
         $this->image('images/signatures/accountant.png', 18, $this->getY()+5, 25);
         $this->setXY(15, $this->getY()+27); 
         $this->cell(40, 6, utf8_decode("Comptable"), 0, 0, 'L'); 
+    }
+
+    public function getFounderSignature($posix = 0) 
+    {
+        $this->setXY(15 + $posix, $this->getY()+3); 
+        $this->setFont('Arial', 'IB', 10);
+        $this->cell(40, 6, utf8_decode("Moussa TOURE"), 0, 0, 'L'); 
+        $this->image('images/signatures/ceo.png', 18 + $posix, $this->getY()+5, 45, 25);
+        $this->setXY(15 + $posix, $this->getY()+27); 
+        $this->cell(40, 6, utf8_decode("Président Directeur Général"), 0, 0, 'L'); 
     }
 
     public function getPartner($partner) 
@@ -110,9 +120,9 @@ class App extends Fpdf
         $this->SetFont('Arial', 'I', 6);
         $this->Cell($pageWidth, 3, utf8_decode("GROUP MAFAMO PRESS SARL"), 0, 1, 'C');
         $this->Cell($pageWidth, 3, utf8_decode("SIS A L'AEROPORT INTERNATIONAL D'AHMED SEKOU TOURE"), 0, 1, 'C');
-        $this->Cell($pageWidth, 3, utf8_decode("Immeuble TOURE APPARTEMENT 4A-AUTO-ROUTE FIDEL CASTRO"), 0, 1, 'C');
+        $this->Cell($pageWidth, 3, utf8_decode("Immeuble TOURE Rez-De-Chaussée-AUTO-ROUTE FIDEL CASTRO"), 0, 1, 'C');
         $this->Cell($pageWidth, 3, utf8_decode("COMMUNE DE MATOTO - BP: 2024 Conakry - Rép de Guinée"), 0, 1, 'C');
-        $this->Cell($pageWidth, 3, utf8_decode("Tél: (+224) 610421717 / 625123232 - Site Web: www.gmpsarl.com"), 0, 1, 'C');
+        $this->Cell($pageWidth, 3, utf8_decode("Tél: (+224) 610421717 / 625123232 - Site Web: www.groupmafamo.com"), 0, 1, 'C');
 
         $this->Image('images/flag.png', 4, $pageHeight - 17, 25); 
         $this->Image('images/branding.png', $pageWidth - 25 - 4, $pageHeight - 17, 25);
@@ -327,7 +337,7 @@ class App extends Fpdf
             $this->setX(81);
         } 
         
-        $bankname = "JAGUAR SECURITY SERVICES SARL - RIB: ". ($isDiama ? '0010330009-04 - DIAMA BANK' : '004.002.4410425102.05 - BANQUE ISLAMIQUE DE GUINEE (BIG)');
+        $bankname = "JAGUAR SECURITY SERVICES SARL - RIB: ". ($isDiama ? '0010330009-04 - DIAMA BANK' : '036.001.0100002652.25 - ACCESS BANK GUINEE');
         // if(strlen($txt) <= 191 && strlen($txt) > 144) {
         //     $bankname = str_replace("ISLAMIQUE DE GUINEE (BIG)", '', $bankname);
         // } 
@@ -339,7 +349,7 @@ class App extends Fpdf
         // }
     }
 
-    function salariesTable($header, $data)
+    function _salariesTable($header, $data)
     {
         // Couleurs, épaisseur du trait et police grasse
         $this->setFillColor(150, 0, 0);
@@ -503,6 +513,95 @@ class App extends Fpdf
         exit;
     }
 
+    public function salariesTable($employees, $parameters = []) 
+    {
+        $this->addPage();
+        $this->setTitle('LISTE DES SALAIRES');
+        $this->setFont('Arial', 'B', 12);
+
+        $this->setFillColor(10, 114, 177);
+        $this->setTextColor(255, 255, 255);
+        $pageWidth = $this->GetPageWidth();  
+        $text = utf8_decode("REGLEMENT DE SALAIRE A ".strtoupper($parameters['checkout']->name));
+
+        $this->SetX(4); 
+        $this->Cell($pageWidth - 8, 10, $text, 1, 1, 'C', true); 
+
+        $this->setTextColor(0, 0, 0);
+        $this->setX(4, $this->getY()+2);
+        $this->setFont('Arial', 'I', 10);
+        $this->multicell($this->GetPageWidth() - 8, 5, utf8_decode("Chers Responsables de ".strtoupper($parameters['checkout']->name).", nous vous autorisons de procéder au paiement de salaire par virement bancaire des employés dont les prénoms, noms, matricules, RIB et salaires suivent :"), 0, 'J');
+
+        $this->ln(2);
+        $this->setXY(4, $this->getY()+1);
+        $this->setFont('Arial', 'IB', 10);
+        $this->cell(45, 5, utf8_decode("INTITULE COMPTE:"), 0, 0, 'L', false);
+        $this->cell(45, 5, utf8_decode(strtoupper($parameters['checkout']->title)), 0, 1, 'L');
+        $this->setX(4);
+        $this->cell(45, 5, utf8_decode("MOIS:"), 0, 0, 'L', false);
+        $this->cell(45, 5, utf8_decode(strtoupper(monthname($parameters['month']))." / ".$parameters['year']), 0, 1, 'L');
+        $this->setX(4);
+        $this->cell(45, 5, utf8_decode("N° COMPTE:"), 0, 0, 'L', false);
+        $this->cell(45, 5, utf8_decode(strtoupper($parameters['checkout']->ref)), 0, 1, 'L');
+        $this->setX(4);
+        $this->cell(45, 5, utf8_decode("BANQUE:"), 0, 0, 'L', false);
+        $this->cell(45, 5, utf8_decode(strtoupper($parameters['checkout']->name)), 0, 1, 'L');
+
+        $this->ln();
+        // En-têtes du tableau
+        $this->setFont('Arial', 'B', 10);
+        $header = array('#', 'EMPLOYE', 'MATRICULE', 'RIB', 'NET A PAYER');
+        $w = array(8, 70, 40, 44, 40);
+
+        $this->setX(4);
+        // Imprimer les en-têtes
+        for ($i = 0; $i < count($header); $i++) {
+            $this->cell($w[$i], 8, utf8_decode($header[$i]), 1, 0, 'C');
+        }
+        $this->ln();
+
+        // Imprimer les données (remplacez par votre logique)
+        $total = 0;
+        $this->setFont('Arial', 'I', 9);
+        foreach ($employees as $key => $item) {
+            $this->setX(4);
+            $this->cell($w[0], 6, ++$key, 1, 0, 'C');
+            $this->cell($w[1], 6, utf8_decode($item->name), 1, 0, 'C');
+            $this->cell($w[2], 6, utf8_decode($item->ref), 1, 0, 'C');
+            $this->cell($w[3], 6, utf8_decode($item->rib), 1, 0, 'C');
+            $net = $item->net - ($item->acompte + $item->sanction);
+            $this->cell($w[4], 6, utf8_decode(moneyformat($net)), 1, 0, 'C');
+            $this->ln();
+            $total += $net;
+        }
+
+        // $this->setFillColor(10, 114, 177);
+        $this->setXY(116, $this->getY()+1);
+        $this->setFont('Arial', 'IB', 10);
+        $this->cell(45, 6, utf8_decode("TOTAL HT"), 1, 0, 'L', false);
+        $this->setTextColor(255, 255, 255);
+        $this->cell(45, 6, utf8_decode(moneyformat($total)), 1, 1, 'R', true);
+        $this->setX(116);
+        $this->setTextColor(0, 0, 0);
+        $this->cell(45, 6, utf8_decode("TOTAL (CNSS & RTS)"), 1, 0, 'L', false);
+        $this->setTextColor(255, 255, 255);
+        $this->cell(45, 6, utf8_decode(moneyformat(0)), 1, 1, 'R', true);
+        $this->setX(116);
+        $this->setTextColor(0, 0, 0);
+        $this->cell(45, 6, utf8_decode("TOTAL TTC"), 1, 0, 'L', false);
+        $this->setTextColor(255, 255, 255);
+        $this->cell(45, 6, utf8_decode(moneyformat($total)), 1, 1, 'R', true);
+        $this->setTextColor(0, 0, 0);
+
+        $this->ln(2);
+        $this->getAccountantSignature();
+        $this->getDirectorSignature(27);
+        $this->ln(2);
+        $this->getFounderSignature(65);
+        $this->output();
+        exit;
+    }
+
     public function partnersTable($partners) 
     {
         $this->addPage();
@@ -545,17 +644,306 @@ class App extends Fpdf
         $this->output();
         exit;
     }
+    
+    function appointmentsTable($appointments)
+    {
+        $this->addPage();
+        $this->setTitle('LISTE GENERALE DES RENDEZ-VOUS');
+        $this->setFont('Arial', 'B', 12);
 
-    public function contractTable($contract) 
+        $pageWidth = $this->GetPageWidth();  
+        $text = utf8_decode("LISTE GENERALE DES RENDEZ-VOUS");
+
+        $this->SetX(4); 
+        $this->setFillColor(253, 104, 4);
+        $this->Cell($pageWidth - 8, 10, $text, 1, 1, 'C', true); 
+        
+        // En-tête
+        $header = ['#', 'VISITEUR', 'ENTREPRISE', 'DATE', 'HORAIRE', 'OBSERVATIONS'];
+        $w = [8, 45, 59, 25, 30, 35];
+        
+        $this->setX(4);
+        $this->SetLineWidth(.3);
+        $this->SetTextColor(255);
+        $this->SetDrawColor(0, 0, 0);
+        $this->SetFont('Arial', 'IB', 9);
+        $this->setFillColor(10, 114, 177);
+        
+        for($i=0; $i < count($header); $i++)
+            $this->Cell($w[$i], 7, utf8_decode($header[$i]), 1, 0, 'C', true);
+        $this->Ln();
+        
+        $this->SetTextColor(0);
+        $this->SetLineWidth(.1);
+        $this->SetFont('Arial', 'I', 8);
+        foreach($appointments as $key => $item)
+        {
+            $this->setX(4);
+            $this->Cell($w[0], 6, ++$key, 1, 0, 'C');
+            $this->Cell($w[1], 6, utf8_decode($item->visitor), 1, 0, 'C');
+            $this->SetFont('Arial', 'IB', 8);
+            $this->Cell($w[2], 6, utf8_decode($item->company), 1, 0, 'C');
+            $this->SetFont('Arial', 'I', 8);
+            $this->Cell($w[3], 6, utf8_decode(date('d/m/Y', strtotime($item->expected_at))), 1, 0, 'C');
+            $this->Cell($w[4], 6, utf8_decode($item->began_at." à ".$item->ended_at), 1, 0, 'C');
+            $this->Cell($w[5], 6, utf8_decode(""), 1, 0, 'C');
+            $this->Ln();
+        }
+        $this->setX(4);
+        $this->Cell(array_sum($w), 0, '', 'T', 1);
+        $this->getDirectorSignature();
+        $this->output();
+        exit;
+    }
+    
+    function equipmentsTable($equipments)
+    {
+        $this->addPage();
+        $this->setTitle('LISTE GENERALE DES EQUIPEMENTS');
+        $this->setFont('Arial', 'B', 12);
+
+        $pageWidth = $this->GetPageWidth();  
+        $text = utf8_decode("LISTE GENERALE DES EQUIPEMENTS");
+
+        $this->SetX(4); 
+        $this->setFillColor(253, 104, 4);
+        $this->Cell($pageWidth - 8, 10, $text, 1, 1, 'C', true); 
+        
+        // En-tête
+        $header = ['#', 'EQUIPEMENT', 'PRIX UNITAIRE', 'QUANTITE'];
+        $w = [8, 119, 45, 30];
+        
+        $this->setX(4);
+        $this->SetLineWidth(.3);
+        $this->SetTextColor(255);
+        $this->SetDrawColor(0, 0, 0);
+        $this->SetFont('Arial', 'IB', 9);
+        $this->setFillColor(10, 114, 177);
+        
+        for($i=0; $i < count($header); $i++)
+            $this->Cell($w[$i], 7, utf8_decode($header[$i]), 1, 0, 'C', true);
+        $this->Ln();
+        
+        $this->SetTextColor(0);
+        $this->SetLineWidth(.1);
+        $this->SetFont('Arial', 'I', 8);
+        foreach($equipments as $key => $item)
+        {
+            $this->setX(4);
+            $this->Cell($w[0], 6, ++$key, 1, 0, 'C');
+            $this->SetFont('Arial', 'IB', 8);
+            $this->Cell($w[1], 6, utf8_decode($item->name), 1, 0, 'C');
+            $this->SetFont('Arial', 'I', 8);
+            $this->Cell($w[2], 6, utf8_decode(moneyformat($item->price)), 1, 0, 'C');
+            $this->Cell($w[3], 6, utf8_decode($item->qty." ".$item->unit), 1, 0, 'C');
+            $this->Ln();
+        }
+        $this->setX(4);
+        $this->Cell(array_sum($w), 0, '', 'T', 1);
+        $this->getDirectorSignature();
+        $this->output();
+        exit;
+    }
+    
+    function dotationsTable($dotations)
+    {
+        $this->addPage();
+        $this->setTitle('LISTE GENERALE DES DOTATIONS');
+        $this->setFont('Arial', 'B', 12);
+
+        $pageWidth = $this->GetPageWidth();  
+        $text = utf8_decode("LISTE GENERALE DES DOTATIONS");
+
+        $this->SetX(4); 
+        $this->setFillColor(253, 104, 4);
+        $this->Cell($pageWidth - 8, 10, $text, 1, 1, 'C', true); 
+        
+        // En-tête
+        $header = ['#', 'EMPLOYE', 'TELEPHONE', 'EQUIPEMENT', 'QUANTITE'];
+        $w = [8, 64, 30, 70, 30];
+        
+        $this->setX(4);
+        $this->SetLineWidth(.3);
+        $this->SetTextColor(255);
+        $this->SetDrawColor(0, 0, 0);
+        $this->SetFont('Arial', 'IB', 9);
+        $this->setFillColor(10, 114, 177);
+        
+        for($i=0; $i < count($header); $i++)
+            $this->Cell($w[$i], 7, utf8_decode($header[$i]), 1, 0, 'C', true);
+        $this->Ln();
+        
+        $this->SetTextColor(0);
+        $this->SetLineWidth(.1);
+        $this->SetFont('Arial', 'I', 8);
+        foreach($dotations as $key => $item)
+        {
+            $this->setX(4);
+            $this->Cell($w[0], 6, ++$key, 1, 0, 'C');
+            $this->Cell($w[1], 6, utf8_decode($item->employee->name), 1, 0, 'C');
+            $this->SetFont('Arial', 'IB', 8);
+            $this->Cell($w[2], 6, utf8_decode($item->employee->phone), 1, 0, 'C');
+            $this->SetFont('Arial', 'I', 8);
+            $this->Cell($w[3], 6, utf8_decode($item->equipment->name), 1, 0, 'C');
+            $this->Cell($w[4], 6, utf8_decode($item->qty." ".$item->unit), 1, 0, 'C');
+            $this->Ln();
+        }
+        $this->setX(4);
+        $this->Cell(array_sum($w), 0, '', 'T', 1);
+        $this->getDirectorSignature();
+        $this->output();
+        exit;
+    }
+    
+    public function correspondencesTable($correspondences) 
     {
         $this->addPage('L');
-        $this->setTitle('CONTRACT #'.$contract->ref);
+        $this->setTitle('LISTE GENERALE DES COURRIERS');
 
         $this->setFillColor(253, 104, 4);
-        $this->getPartner($contract->partner);
         $this->setFont('Arial', 'B', 12);
         $this->setX(4); 
-        $this->cell($this->GetPageWidth() - 8, 10,  utf8_decode($contract->title), 1, 1, 'C', true); 
+        $this->cell($this->GetPageWidth() - 8, 10,  utf8_decode('LISTE GENERALE DES COURRIERS'), 1, 1, 'C', true); 
+
+
+        // En-têtes du tableau
+        $this->setFont('Arial', 'IB', 10);
+        $this->setFillColor(10, 114, 177);
+        $header = array('#', 'Désignation', 'Contenu');
+        $w = [8, 40, 241];
+
+        $this->setX(4);
+        // Imprimer les en-têtes
+        for ($i = 0; $i < count($header); $i++) {
+            $this->cell($w[$i], 8, utf8_decode($header[$i]), 1, 0, 'C', true);
+        }
+        $this->ln();
+
+        // Imprimer les données (remplacez par votre logique)
+        $this->setFont('Arial', 'I', 9);
+        foreach ($correspondences as $key => $correspondence) {
+            // Donnée 1 - Fusion verticale pour #
+            $y1 = $this->GetY(); 
+            $x1 = $this->GetX();
+            
+            $this->setX(4);
+            $this->MultiCell($w[0], 30, toroman($key+1), 1, 'C'); // fusion verticale (10 * 3 lignes)
+            $this->SetXY($x1 + ($key == 0 ? 2 : 0), $y1); 
+            
+            $designations = ['Objet'=>$correspondence->object, 'Message'=>$correspondence->message, 'Date'=>date('d/m/Y H:i:s', strtotime($correspondence->created_at))];
+            foreach ($designations as $item => $content) {
+                $this->Cell($w[1], 10, $item, 1, 0);
+                $this->Cell($w[2], 10, $content, 1, 1);
+                $this->SetX($x1 + ($key == 0 ? 2 : 0)); 
+            }
+        }
+        
+        $this->getDirectorSignature();
+        $this->output();
+        exit;
+    }
+    
+    public function bookingTable($booking) 
+    {
+        $this->addPage();
+        $this->setTitle('RESERVATION '.$booking->room->establishment->establishment);
+        
+        $this->SetFont('Arial', 'IB', 12);
+        $this->Cell(0, 7, utf8_decode('RESERVATION N° #'.date('dmYHis', strtotime($booking->created_at))), 0, 1, 'L');
+        $this->SetFont('Arial', 'I', 10);
+        $this->Cell(0, 5, utf8_decode('Date : '.date('d/m/Y', strtotime($booking->created_at))), 0, 1, 'L');
+        $this->Ln(3);
+        
+        // Infos Client
+        $this->setX(116);
+        $this->SetFont('Arial', 'IB', 10);
+        $this->Cell($this->GetStringWidth('Client : '), 5, utf8_decode('Client : '), 0, 0, 'R');
+        $this->SetFont('Arial', 'I', 10); // Normal
+        $this->Cell(0, 5, utf8_decode($booking->customer), 0, 1, 'L');
+        
+        $this->setX(110);
+        $this->SetFont('Arial', 'IB', 10);
+        $this->Cell($this->GetStringWidth('Téléphone : '), 5, utf8_decode('Téléphone : '), 0, 0, 'R');
+        $this->SetFont('Arial', 'I', 10); // Normal
+        $this->Cell(0, 5, utf8_decode($booking->phone), 0, 1, 'L');
+        
+        $this->setX(116);
+        $this->SetFont('Arial', 'IB', 10);
+        $this->Cell($this->GetStringWidth('Email : '), 5, utf8_decode('Email : '), 0, 0, 'R');
+        $this->SetFont('Arial', 'I', 10); // Normal
+        $this->Cell(0, 5, utf8_decode($booking->email), 0, 1, 'L');
+
+        $this->Ln(4);
+        $this->setFont('Arial', 'IB', 12);
+        $pageWidth = $this->GetPageWidth();  
+        $text = utf8_decode($booking->room->name);
+
+        $this->SetX(4); 
+        $this->Cell($pageWidth - 8, 10, $text, 1, 1, 'C'); 
+
+
+        // En-têtes du tableau
+        $this->setFont('Arial', 'IB', 8);
+        $header = ['#', 'Désignation', 'Nuité', 'Montant', 'TTC'];
+        $w = array(8, 80, 24, 45, 45);
+
+        $this->setX(4);
+        // Imprimer les en-têtes
+        for ($i = 0; $i < count($header); $i++) {
+            $this->cell($w[$i], 8, utf8_decode($header[$i]), 1, 0, 'C');
+        }
+        $this->ln();
+
+        // Imprimer les données (remplacez par votre logique)
+        $this->setFont('Arial', 'I', 8);
+        $days = getDaysBetweenDates($booking->begin_date, $booking->end_date);
+        foreach ($days as $key => $item) {
+            $this->setX(4);
+            $this->cell($w[0], 6, ++$key, 1, 0, 'C');
+            $this->cell($w[1], 6, utf8_decode($item), 1, 0, 'L');
+            $this->cell($w[2], 6, utf8_decode('01'), 1, 0, 'C');
+            $this->cell($w[3], 6, utf8_decode(moneyformat($booking->room->price)), 1, 0, 'C');
+            $this->cell($w[4], 6, utf8_decode(moneyformat($booking->room->price*1)), 1, 0, 'R');
+            $this->ln();
+        }
+        
+        $this->setFillColor(10, 114, 177);
+        $this->setXY(116, $this->getY()+1);
+        $this->setFont('Arial', 'IB', 10);
+        $this->cell(45, 6, utf8_decode('TOTAL Jours'), 1, 0, 'L', false);
+        $this->cell(45, 6, utf8_decode(count($days)), 1, 1, 'R', true);
+        $this->setX(116);
+        $this->cell(45, 6, utf8_decode("Total HT"), 1, 0, 'L', false);
+        $this->cell(45, 6, utf8_decode(moneyformat(count($days)*$booking->room->price)), 1, 1, 'R', true);
+        $this->setX(116);
+        $this->cell(45, 6, utf8_decode("Total TVA"), 1, 0, 'L', false);
+        $this->cell(45, 6, utf8_decode(moneyformat(0)), 1, 1, 'R', true);
+        $this->setX(116);
+        $this->cell(45, 6, utf8_decode("TOTAL TTC"), 1, 0, 'L', false);
+        $this->cell(45, 6, utf8_decode(moneyformat(count($days)*$booking->room->price)), 1, 1, 'R', true);
+        $this->ln(2);
+        $this->setX(4, $this->getY()+1);
+        $this->setFont('Arial', 'IB', 10);
+        $this->multicell($this->GetPageWidth() - 8, 5, utf8_decode("Sauf Erreur ou Omission, cette facture s'élève à la somme de ".numtoletters(count($days)*$booking->room->price)." Francs Guinéens (".moneyformat(count($days)*$booking->room->price).") payable par espèces, par chèque ou par virement bancaire au compte GROUP MAFAMO PRESS SARL 036.001.0100002652.25 - ACCESS BANK GUINEE"), 0, 'C');
+
+        $this->ln(2);
+        $this->getAccountantSignature();
+        $this->getDirectorSignature(27);
+
+        $this->output();
+        exit;
+    }
+
+    public function quotationTable($quotation) 
+    {
+        $this->addPage('L');
+        $this->setTitle('CONTRACT #'.$quotation->ref);
+
+        $this->setFillColor(253, 104, 4);
+        $this->getPartner($quotation->partner);
+        $this->setFont('Arial', 'B', 12);
+        $this->setX(4); 
+        $this->cell($this->GetPageWidth() - 8, 10,  utf8_decode($quotation->title), 1, 1, 'C', true); 
 
 
         // En-têtes du tableau
@@ -572,10 +960,9 @@ class App extends Fpdf
         $this->ln();
 
         // Imprimer les données (remplacez par votre logique)
-        // dd($contract->details->groupBy('category'));
         $iteration = 0;
         $total = 0;
-        foreach ($contract->details->groupBy('category') as $category => $details) {
+        foreach ($quotation->details->groupBy('category') as $category => $details) {
             $this->setX(4);
             $this->setFont('Arial', 'IB', 10);
             $this->cell(8, 6, toroman(++$iteration), 1, 0, 'C');
@@ -611,21 +998,108 @@ class App extends Fpdf
         $this->cell(45, 6, utf8_decode(moneyformat($total)), 1, 1, 'R', true);
         $this->setX(178);
         $this->cell(70, 6, utf8_decode("MAIN D'OEUVRE"), 1, 0, 'L', true);
-        $this->cell(45, 6, utf8_decode(moneyformat($contract->workforce)), 1, 1, 'R', true);
+        $this->cell(45, 6, utf8_decode(moneyformat($quotation->workforce)), 1, 1, 'R', true);
         $this->setX(178);
         $this->cell(70, 6, utf8_decode("TOTAL HT"), 1, 0, 'L', true);
-        $this->cell(45, 6, utf8_decode(moneyformat($contract->workforce+$total)), 1, 1, 'R', true);
+        $this->cell(45, 6, utf8_decode(moneyformat($quotation->workforce+$total)), 1, 1, 'R', true);
         $this->setX(178);
         $this->cell(70, 6, utf8_decode("TOTAL TVA"), 1, 0, 'L', true);
         $this->cell(45, 6, utf8_decode(moneyformat(0)), 1, 1, 'R', true);
         $this->setX(178);
         $this->cell(70, 6, utf8_decode("TOTAL TTC"), 1, 0, 'L', true);
-        $this->cell(45, 6, utf8_decode(moneyformat($contract->workforce+$total)), 1, 1, 'R', true);
+        $this->cell(45, 6, utf8_decode(moneyformat($quotation->workforce+$total)), 1, 1, 'R', true);
 
         $this->setX(4, $this->getY()+1);
         $this->setFont('Arial', 'IB', 10);
         $this->setFillColor(253, 104, 4);
-        $this->multicell($this->GetPageWidth() - 8, 5, utf8_decode("Ce présent dévis s'élève à la somme de ".numtoletters($contract->workforce+$total)." Francs Guinéens (".moneyformat($contract->workforce+$total).") payable par espèces, par chèque ou par virement bancaire au compte GROUP MAFAMO PRESS SARL N°0014160008 / DIAMA BANK S.A"), 1, 'C', true);
+        $this->multicell($this->GetPageWidth() - 8, 5, utf8_decode("Ce présent dévis s'élève à la somme de ".numtoletters($quotation->workforce+$total)." Francs Guinéens (".moneyformat($quotation->workforce+$total).") payable par espèces, par chèque ou par virement bancaire au compte GROUP MAFAMO PRESS SARL 036.001.0100002652.25 / ACCESS BANK GUINEE S.A"), 1, 'C', true);
+
+        $this->ln(2);
+        $this->getAccountantSignature();
+        $this->getDirectorSignature(27);
+        $this->output();
+        exit;
+    }
+
+    public function cashflowsTable($quotation) 
+    {
+        $this->addPage('L');
+        $this->setTitle('CONTRACT #'.$quotation->ref);
+
+        $this->setFillColor(253, 104, 4);
+        $this->getPartner($quotation->partner);
+        $this->setFont('Arial', 'B', 12);
+        $this->setX(4); 
+        $this->cell($this->GetPageWidth() - 8, 10,  utf8_decode($quotation->title), 1, 1, 'C', true); 
+
+
+        // En-têtes du tableau
+        $this->setFont('Arial', 'IB', 10);
+        $this->setFillColor(10, 114, 177);
+        $header = array('#', 'Désignation', 'Unité', 'Quantité', 'Prix Unitaire', 'Montant');
+        $w = array(8, 146, 20, 30, 40, 45);
+
+        $this->setX(4);
+        // Imprimer les en-têtes
+        for ($i = 0; $i < count($header); $i++) {
+            $this->cell($w[$i], 8, utf8_decode($header[$i]), 1, 0, 'C', true);
+        }
+        $this->ln();
+
+        // Imprimer les données (remplacez par votre logique)
+        $iteration = 0;
+        $total = 0;
+        foreach ($quotation->details->groupBy('category') as $category => $details) {
+            $this->setX(4);
+            $this->setFont('Arial', 'IB', 10);
+            $this->cell(8, 6, toroman(++$iteration), 1, 0, 'C');
+            $this->cell(236, 6, utf8_decode(strtoupper($category)), 1, 0, 'C');
+            $this->cell(45, 6, '', 1, 1, 'C');
+            $sub = 0;
+            foreach($details as $key => $item) {
+                $this->setX(4);
+                $this->setFont('Arial', 'I', 8);
+                $this->cell($w[0], 6, ++$key, 1, 0, 'C');
+                $this->cell($w[1], 6, utf8_decode($item->label), 1, 0, 'L');
+                $this->cell($w[2], 6, utf8_decode($item->unit), 1, 0, 'C');
+                $this->cell($w[3], 6, utf8_decode($item->qty), 1, 0, 'C');
+                $this->cell($w[4], 6, utf8_decode(moneyformat($item->price)), 1, 0, 'C');
+                $this->cell($w[5], 6, utf8_decode(moneyformat($item->price*$item->qty)), 1, 0, 'R');
+                $this->ln();
+                $sub += $item->price*$item->qty;
+            }
+            $total += $sub;
+            $this->setX(4);
+            $this->setFont('Arial', 'IB', 10);
+            $this->setFillColor(211, 211, 211);
+
+            $this->cell(8, 6, '', 1, 0, 'C', true);
+            $this->cell(236, 6, utf8_decode(toroman($iteration).'. MONTANT TOTAL '.strtoupper($category)), 1, 0, 'C', true);
+            $this->cell(45, 6, utf8_decode(moneyformat($sub)), 1, 1, 'R', true);
+        }
+
+        $this->setFillColor(10, 114, 177);
+        $this->setXY(178, $this->getY()+1);
+        $this->setFont('Arial', 'IB', 10);
+        $this->cell(70, 6, utf8_decode('TOTAL MONTANTS'), 1, 0, 'L', true);
+        $this->cell(45, 6, utf8_decode(moneyformat($total)), 1, 1, 'R', true);
+        $this->setX(178);
+        $this->cell(70, 6, utf8_decode("MAIN D'OEUVRE"), 1, 0, 'L', true);
+        $this->cell(45, 6, utf8_decode(moneyformat($quotation->workforce)), 1, 1, 'R', true);
+        $this->setX(178);
+        $this->cell(70, 6, utf8_decode("TOTAL HT"), 1, 0, 'L', true);
+        $this->cell(45, 6, utf8_decode(moneyformat($quotation->workforce+$total)), 1, 1, 'R', true);
+        $this->setX(178);
+        $this->cell(70, 6, utf8_decode("TOTAL TVA"), 1, 0, 'L', true);
+        $this->cell(45, 6, utf8_decode(moneyformat(0)), 1, 1, 'R', true);
+        $this->setX(178);
+        $this->cell(70, 6, utf8_decode("TOTAL TTC"), 1, 0, 'L', true);
+        $this->cell(45, 6, utf8_decode(moneyformat($quotation->workforce+$total)), 1, 1, 'R', true);
+
+        $this->setX(4, $this->getY()+1);
+        $this->setFont('Arial', 'IB', 10);
+        $this->setFillColor(253, 104, 4);
+        $this->multicell($this->GetPageWidth() - 8, 5, utf8_decode("Ce présent dévis s'élève à la somme de ".numtoletters($quotation->workforce+$total)." Francs Guinéens (".moneyformat($quotation->workforce+$total).") payable par espèces, par chèque ou par virement bancaire au compte GROUP MAFAMO PRESS SARL 036.001.0100002652.25 / ACCESS BANK GUINEE S.A"), 1, 'C', true);
 
         $this->ln(2);
         $this->getAccountantSignature();

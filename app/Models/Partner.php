@@ -46,13 +46,4 @@ class Partner extends Model
 		return $this->hasMany(Affectation::class);
 	}
 
-	public function billings()
-	{
-		return $this->hasMany(Billing::class);
-	}
-
-	public function contracts()
-	{
-		return $this->hasMany(Contract::class);
-	}
 }

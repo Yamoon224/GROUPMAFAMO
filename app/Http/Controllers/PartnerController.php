@@ -14,16 +14,7 @@ class PartnerController extends Controller
     public function index()
     {
         $partners = Partner::orderByDesc('id')->get();
-        return view('admin.partners.index', compact('partners'));
-    }
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function selectAll()
-    {
-        $partners = Partner::orderByDesc('id')->get();
-        return view('admin.partners.cards', compact('partners'));
+        return view('admin.partners', compact('partners'));
     }
 
     /**
@@ -31,14 +22,15 @@ class PartnerController extends Controller
      */
     public function search(Request $request)
     {
-        $partners = Partner::all();
+        $partners = Partner::orderBy('company')->get();
         if(!empty($request->search)) {
             $partners = Partner::where('company', 'LIKE', '%'.$request->search.'%')
                 ->orwhere('type', 'LIKE', '%'.strtoupper($request->search).'%')
-                ->orwhere('phone', 'LIKE', '%'.$request->search.'%');
+                ->orwhere('phone', 'LIKE', '%'.$request->search.'%')
+                ->orderBy('company')
+                ->get();
         }
-        $partners = $partners->orderByDesc('id')->get();
-        return view('admin.partners.search', compact('partners'));
+        return view('components.partners', compact('partners'));
     }
 
     /**
@@ -46,7 +38,7 @@ class PartnerController extends Controller
      */
     public function create()
     {
-        return view('admin.partners.create');
+
     }
 
     /**
@@ -67,7 +59,7 @@ class PartnerController extends Controller
             $request->validate([
                 'logo' => 'image|mimes:jpg,jpeg,png|max:2048', // 2MB max
             ]);
-            $data['logo'] = $request->file('logo')->store('companies', 'public');
+            $data['logo'] = 'storages/'.$request->file('logo')->store('companies', 'public');
         }
         Partner::create($data);
         return redirect()->back();
@@ -78,8 +70,7 @@ class PartnerController extends Controller
      */
     public function show(string $id)
     {
-        $partner = Partner::find($id);
-        return view('admin.partners.show', compact('partner'));
+        
     }
 
     /**
@@ -87,8 +78,7 @@ class PartnerController extends Controller
      */
     public function edit(string $id)
     {
-        $partner = Partner::find($id);
-        return view('admin.partners.edit', compact('partner'));
+        
     }
 
     /**
@@ -110,7 +100,7 @@ class PartnerController extends Controller
             $request->validate([
                 'logo' => 'image|mimes:jpg,jpeg,png|max:2048', // 2MB max
             ]);
-            $data['logo'] = $request->file('logo')->store('companies', 'public');
+            $data['logo'] = 'storages/'.$request->file('logo')->store('companies', 'public');
         }
         $partner->update($data);
 

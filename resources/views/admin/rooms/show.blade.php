@@ -1,81 +1,141 @@
 <x-app-layout>
-    @push('links')
-    <link href="{{ asset('vendor/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet">
-	<link href="{{ asset('vendor/niceselect/css/nice-select.css') }}" rel="stylesheet">
-    @endpush
-
-    <div class="page-titles dark:bg-[#242424] flex items-center justify-between relative border-b border-[#E6E6E6] dark:border-[#444444] flex-wrap z-[1] py-[0.6rem] sm:px-[1.95rem] px-[1.55rem] bg-white">
-        <ol class="text-[13px] flex items-center flex-wrap bg-transparent">
-            <li><a href="{{ route('rooms.index') }}" class="text-[#828690] dark:text-white text-[13px]">@lang('locale.room', ['suffix'=>'s'])</a></li>
-            <li class="pl-2 before:content-['/'] before:font-[simple-line-icons] before:font-black before:text-xl before:leading-4 before:pr-2 before:float-left before:text-primary text-primary font-medium"><a>{{ $room->name }}</a></li>
-        </ol>
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="{{ route('rooms.index') }}">@lang('locale.room', ['suffix'=>'s'])</a></li>
+                        <li class="breadcrumb-item active">@lang('locale.show')</li>
+                    </ol>
+                </div>
+                <h4 class="page-title">@lang('locale.room', ['suffix'=>''])</h4>
+            </div>
+        </div>
     </div>
+    <!-- end page title -->
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="w-full">
-                <div class="card">
-                    <div class="card-header flex justify-between items-center sm:p-5 sm:pt-6 p-4 pt-5 max-sm:pb-5 relative z-[2]">
-                        <h4 class="heading blog-title relative">{{ $room->type->type." ".$room->name }}</h4>
-                        <a href="javascript:void(0)" class="btn hover:bg-hover-primary duration-500 py-[5px] px-3 text-[13px] font-normal rounded text-white bg-primary leading-[18px] inline-block border border-primary offcanvas-toggle" data-dz-offcanvas="new-image">+ @lang('locale.add') @lang('locale.image', ['suffix'=>''])</a>
-                    </div>
-                    <div class="card-body sm:p-5 p-4">
-                        <div class="row">
-                            <div class="w-1/2">
-                                <div class="blog-img relative">
-                                    <img src="{{ asset($room->front) }}" alt="PHOTO I" class="sm:h-[400px] h-[300px] w-full object-cover rounded-md">
-                                    <div class="absolute py-5 px-[15px] bottom-0">
-                                        <h2 class="xl:text-3xl text-xl text-white leading-[1.1] font-semibold mb-2">PHOTO I</h2>
-                                        <img src="{{ asset('images/profile.png') }}" class="h-[1.275rem] w-[1.275rem] relative inline-block object-cover rounded-full mr-2 small-post" alt="">
-                                        <span class="text-white text-sm">{{ $room->address }}</span>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <ul class="nav nav-tabs nav-bordered mb-3">
+                        <li class="nav-item">
+                            <a href="#room-show" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
+                                <i class="uil uil-building"></i> @lang('locale.details')
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#room-image" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+                                <i class="uil uil-image-plus"></i> @lang('locale.image', ['suffix'=>'s'])
+                            </a>
+                        </li>
+                    </ul> <!-- end nav-->
+                    <div class="tab-content">
+                        <div class="tab-pane show active" id="room-show">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <div class="mb-2">
+                                                <label for="establishment" class="col-form-label col-form-label-sm">@lang('locale.establishment', ['suffix'=>''])</label>
+                                                <select id="establishment" name="establishment_id" readonly class="form-select form-control-sm">
+                                                    <option> {{ $room->establishment->establishment }}</option>
+                                                </select>
+                                            </div>  
+                                            <div class="mb-2">
+                                                <label for="room" class="col-col-form-label col-form-label-sm">@lang('locale.room', ['suffix'=>''])</label>
+                                                <input type="text" readonly value="{{ $room->name }}" class="form-control form-control-sm" name="name" id="room" placeholder="@lang('locale.room', ['suffix'=>''])">
+                                            </div>                                    
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <div class="mb-2">
+                                                <label class="col-form-label col-form-label-sm">@lang('locale.category', ['suffix'=>app()->getLocale() == 'en' ? 'y' : ''])</label>
+                                                <select name="category" readonly class="form-select form-control-sm">
+                                                    <option>{{ $room->category }}</option>
+                                                </select>
+                                            </div>    
+                                            <div class="mb-2">
+                                                <label for="address" class="col-col-form-label col-form-label-sm">@lang('locale.address')</label>
+                                                <input type="text" readonly value="{{ $room->address }}" class="form-control form-control-sm" name="address" id="address" placeholder="@lang('locale.address')">
+                                            </div>                                    
+                                        </div>
+    
+                                        <div class="col-12">
+                                            <div class="mb-2">
+                                                <label for="price" class="col-col-form-label col-form-label-sm">@lang('locale.nightly')</label>
+                                                <input type="text" readonly value="{{ moneyformat($room->price) }}" min="10000" class="form-control form-control-sm" name="price" id="price" placeholder="@lang('locale.nightly')">
+                                            </div>    
+                                        </div>                                    
+    
+                                        <div class="col-12">                                        
+                                            <div class="mb-2">
+                                                <label for="description" class="col-form-label col-form-label-sm">@lang('locale.description')</label>
+                                                <textarea name="description" class="form-control form-control-sm" id="description" placeholder="@lang('locale.description')" readonly>{{ $room->description }}</textarea>
+                                            </div>
+                                        </div>                     	
                                     </div>
                                 </div>
                             </div>
-                            <div class="w-1/2">
-                                <div class="blog-img relative">
-                                    <img src="{{ asset($room->back) }}" alt="PHOTO II" class="sm:h-[400px] h-[300px] w-full object-cover rounded-md">
-                                    <div class="absolute py-5 px-[15px] bottom-0">
-                                        <h2 class="xl:text-3xl text-xl text-white leading-[1.1] font-semibold mb-2">PHOTO II</h2>
-                                        <img src="{{ asset('images/profile.png') }}" class="h-[1.275rem] w-[1.275rem] relative inline-block object-cover rounded-full mr-2 small-post" alt="">
-                                        <span class="text-white text-sm">{{ $room->address }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        </div> 
 
-                        <div class="row">
-                            @foreach($room->images as $item)
-                            <div class="xl:w-1/2 w-full">
-                                <div class="flex mt-[25px] max-sm:flex-wrap">
-                                    <img src="{{ asset($item->link) }}" alt="PHOTO" class="sm:w-[160px] w-full mr-[18px] sm:h-[130px] h-[200px] object-cover rounded-md">
-                                    <div class="post-1">
-                                        <div class="max-xl:mt-[15px]">
-                                            <span class="text-xs py-[0.3125rem] px-2 leading-[0.6875rem] font-medium text-white text-center whitespace-nowrap rounded inline-block bg-info dz-modal-btn" data-dz-modal="edit-image{{ $item->id }}"><i class="fa fa-edit"></i> @lang('locale.edit')</span>
-                                            <h4 class="text-[13px] mt-1.5 mb-2">{{ $item->description ?? __('locale.no_description') }}.</h4>
-                                            <div>
-                                                <img src="{{ asset('images/profile.png') }}" class="h-[1.275rem] w-[1.275rem] relative inline-block object-cover rounded-full mr-2 small-post" alt="PROFILE">
-                                                <span class="text-xs text-body-color"><b class="text-primary">@lang('locale.created_at')</b> {{ date('d/m/Y H:i:s', strtotime($item->created_at)) }}</span>
+                        <div class="tab-pane" id="room-image">
+                            <div class="row">
+                                <div class="col-md-8 col-sm-8 col-xs-12 mx-auto">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="float-end">
+                                                <a role="button" data-bs-toggle="modal" data-bs-target="#add-image" class="btn btn-sm btn-soft-success">@lang('locale.add')</a>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div id="carouselExampleCaption" class="carousel slide" data-bs-ride="carousel">
+                                                        <div class="carousel-inner" role="listbox">
+                                                            @foreach ($room->images as $key => $item)
+                                                            <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
+                                                                <img src="{{ asset($item->link) }}" alt="PHOTO" class="d-block img-fluid">
+                                                                <div class="carousel-caption d-none d-md-block">
+                                                                    <h3 class="text-white">
+                                                                        <form action="{{ route('photos.index', $item->id) }}" method="post">
+                                                                            @csrf @method('DELETE')
+                                                                            <button class="btn btn-soft-danger">@lang('locale.delete')</button>
+                                                                        </form>
+                                                                    </h3>
+                                                                    <p>{{ $item->description ?? __('locale.no_description') }}</p>
+                                                                </div>
+                                                            </div>
+                                                            @endforeach
+                                                        </div>
+                                                        <a class="carousel-control-prev" href="#carouselExampleCaption" role="button" data-bs-slide="prev">
+                                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                            <span class="visually-hidden">@lang('locale.previous')</span>
+                                                        </a>
+                                                        <a class="carousel-control-next" href="#carouselExampleCaption" role="button" data-bs-slide="next">
+                                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                            <span class="visually-hidden">@lang('locale.next')</span>
+                                                        </a>
+                                                    </div>   
+                                                </div>                           	
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <x-edit-image :room="$room" :image="$item"></x-edit-image>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        </div> 
+                    </div> 
+                </div> 
+                <!-- end card body-->
+            </div> 
+            <!-- end card -->
         </div>
-    </div>
-    <x-add-image :room="$room"></x-add-image>
-    @push('scripts')
-    <script src="{{ asset('vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
-	<script src="{{ asset('vendor/datatables/js/dataTables.buttons.min.js') }}"></script>
-	<script src="{{ asset('vendor/datatables/js/buttons.html5.min.js') }}"></script>
-	<script src="{{ asset('vendor/datatables/js/jszip.min.js') }}"></script>
-	<script src="{{ asset('js/plugins-init/datatables.init.min.js') }}"></script>
-	<script src="{{ asset('vendor/niceselect/js/jquery.nice-select.min.js') }}"></script> 
-    @endpush
+        <!-- end col-->
+    </div> 
+    <!-- end row-->
+
+    <x-add-image></x-add-image>
 </x-app-layout>
+
+
 

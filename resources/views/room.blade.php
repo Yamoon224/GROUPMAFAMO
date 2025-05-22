@@ -5,7 +5,7 @@
 			<div class="col-12 py-2">
 				<nav aria-label="breadcrumb">
 					<ol class="breadcrumb mb-0">
-						<li class="breadcrumb-item"><a href="{{ route('welcome') }}">MAFAMO BOOKING</a></li>
+						<li class="breadcrumb-item"><a href="{{ route('welcome') }}">{{ env('APP_NAME') }}</a></li>
 						<li class="breadcrumb-item"><a>{{ $room->type->type }}</a></li>
 						<li class="breadcrumb-item active" aria-current="page">{{ $room->category }}</li>
 					</ol>
@@ -23,9 +23,7 @@
 				<div class="col-lg-6">
 					<!--Swiper-->
 					<div class="row">
-						<div class="swiper-container swiper" data-thumbs="true" id="swiper-1" data-pagination-type=""
-							data-speed="400" data-space-between="120" data-pagination="false" data-navigation="false"
-							data-autoplay="false" data-effect="fade" data-autoplay-delay="3000"
+						<div class="swiper-container swiper" data-thumbs="true" id="swiper-1" data-pagination-type="" data-speed="400" data-space-between="120" data-pagination="false" data-navigation="false" data-autoplay="false" data-effect="fade" data-autoplay-delay="3000"
 							data-breakpoints='{"480": {"slidesPerView": 1}, "768": {"slidesPerView": 1}, "1024": {"slidesPerView": 1}}'>
 							<div class="swiper-wrapper">
 								<div class="swiper-slide">
@@ -117,7 +115,7 @@
 										<span class="text-danger">{{ moneyformat($room->price+$add, session('currency')) }}</span>
 										<span class="text-decoration-line-through">{{ moneyformat($room->price + $add + 10000, session('currency')) }}</span>
 									</p>
-									<span class="badge bg-danger">{{ moneyformat($room->price, session('currency')) }}</span>
+									<span class="badge bg-success">{{ moneyformat($room->price, session('currency')) }}</span>
 								</div>
 								<span class="">
 									4.5
@@ -129,6 +127,8 @@
 									</svg>
 								</span>
 							</div>
+							<hr class="my-3" />
+							<p class="text-muted" style="text-align: justify">{{ $room->description ?? 'Aucune description' }}</p>
 							<hr class="my-3" />
 							<form method="POST" action="{{ route('bookings.store') }}">
 								@csrf
@@ -144,10 +144,16 @@
 										<label>@lang('locale.ended_at') <span class="text-danger">*</span></label>
 										<input type="date" name="end_date" class="form-control" required/>
 									</div>
+									@else
+									<div class="col-12 text-center text-danger">Remplisser ce formulaire, nous allons vous contacter le plutôt possible</div>
 									@endif
-									<div class="col-12 mb-3">
+									<div class="col-lg-6 col-12 mb-3">
 										<label>@lang('locale.customer', ['suffix'=>'']) <span class="text-danger">*</span></label>
 										<input type="text" name="customer" class="form-control" required/>
+									</div>
+									<div class="col-lg-6 col-12 mb-3">
+										<label>@lang('locale.nationality') <span class="text-danger">*</span></label>
+										<input type="text" name="nationality" class="form-control" required/>
 									</div>
 									<div class="col-lg-6 col-12 mb-3">
 										<label>@lang('locale.phone') <span class="text-danger">*</span></label>
@@ -157,6 +163,20 @@
 										<label>@lang('locale.email')</label>
 										<input type="email" name="email" class="form-control"/>
 									</div>
+									<div class="col-lg-6 col-12 mb-3">
+										<label>@lang('locale.identifiant') <span class="text-danger">*</span></label>
+										<input type="text" name="identifiant" class="form-control" required/>
+									</div>
+									<div class="col-lg-6 col-12 mb-3">
+										<label>@lang('locale.type_identifiant') <span class="text-danger">*</span></label>
+										<select name="type_identifiant" class="form-control"/>
+										    <option value="">@lang('locale.select')</option>
+										    @foreach(['CNI', 'PASSEPORT', 'CARTE CONSULAIRE', 'AUTRES'] as $item)
+										    <option>{{ $item }}</option>
+										    @endforeach
+										</select>
+									</div>
+									
 									<div>
 										<button class="btn btn-dark w-full">@lang('locale.submit')</button>
 										{{-- <a href="product-single-v5.html#!" class="btn btn-outline-dark">

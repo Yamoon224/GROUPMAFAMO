@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Checkout;
 use App\Models\Employee;
 use App\Services\Fpdf\App;
 use Illuminate\Http\Request;
@@ -13,35 +14,29 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = Employee::orderByDesc('id')->get();
-        return view('admin.employees.index', compact('employees'));
+        $checkouts = Checkout::orderBy('name')->get();
+        $employees = Employee::orderBy('name')->get();
+        return view('admin.employees.index', compact('employees', 'checkouts'));
     }
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function selectAll()
-    {
-        $employees = Employee::orderByDesc('id')->get();
-        return view('admin.employees.cards', compact('employees'));
-    }
 
     /**
      * Display a listing of the resource.
      */
     public function search(Request $request)
     {
-        $employees = Employee::all();
+        $employees = Employee::orderBy('name')->get();
         if(!empty($request->search)) {
             $employees = Employee::where('name', 'LIKE', '%'.$request->search.'%')
                 ->orwhere('position', 'LIKE', '%'.strtoupper($request->search).'%')
                 ->orwhere('diploma', 'LIKE', '%'.strtoupper($request->search).'%')
                 ->orwhere('contracttype', 'LIKE', '%'.strtoupper($request->search).'%')
                 ->orwhere('ref', 'LIKE', '%'.strtoupper($request->search).'%')
-                ->orwhere('phone', 'LIKE', '%'.$request->search.'%');
+                ->orwhere('phone', 'LIKE', '%'.$request->search.'%')
+                ->orderBy('name')
+                ->get();
         }
-        $employees = $employees->orderByDesc('id')->get();
-        return view('admin.employees.search', compact('employees'));
+        return view('components.employees', compact('employees'));
     }
 
     /**
@@ -67,14 +62,16 @@ class EmployeeController extends Controller
             'warrantyperson' => 'required|string|max:150', // 2MB max
             'warrantyphone' => 'required|string|max:150', // 2MB max
         ]);
-        
+
+                
         $data = $request->except(['_token']);
-        $data['ref'] = "EP".date('Y').mt_rand(1000, 9999);
+        $data['ref'] = "GMP".date('Y').mt_rand(1000, 9999);
+        $data['hastopay'] = !empty($data['hastopay']) ? 'true' : 'false';
         if ($request->hasFile('photo')) {
             $request->validate([
                 'photo' => 'image|mimes:jpg,jpeg,png|max:2048', // 2MB max
             ]);
-            $data['photo'] = $request->file('photo')->store('employees', 'public');
+            $data['photo'] = 'storages/'.$request->file('photo')->store('employees', 'public');
         }
         Employee::create($data);
         return redirect()->back();
@@ -85,8 +82,7 @@ class EmployeeController extends Controller
      */
     public function show(string $id)
     {
-        $employee = Employee::find($id);
-        return view('admin.employees.show', compact('employee'));
+        
     }
 
     /**
@@ -95,7 +91,8 @@ class EmployeeController extends Controller
     public function edit(string $id)
     {
         $employee = Employee::find($id);
-        return view('admin.employees.edit', compact('employee'));
+        $checkouts = Checkout::orderBy('name')->get();
+        return view('admin.employees.edit', compact('employee', 'checkouts'));
     }
 
     /**
@@ -116,11 +113,12 @@ class EmployeeController extends Controller
 
         $employee = Employee::find($id);
         $data = $request->except(['_method', '_token']);
+        $data['hastopay'] = !empty($data['hastopay']) ? 'true' : 'false';
         if ($request->hasFile('photo')) {
             $request->validate([
                 'photo' => 'image|mimes:jpg,jpeg,png|max:2048', // 2MB max
             ]);
-            $data['photo'] = $request->file('photo')->store('employees', 'public');
+            $data['photo'] = 'storages/'.$request->file('photo')->store('employees', 'public');
         }
         $employee->update($data);
 

@@ -1,128 +1,217 @@
 <x-app-layout>
-    <div class="page-titles dark:bg-[#242424] flex items-center justify-between relative border-b border-[#E6E6E6] dark:border-[#444444] flex-wrap z-[1] py-[0.6rem] sm:px-[1.95rem] px-[1.55rem] bg-white">
-        <ol class="text-[13px] flex items-center flex-wrap bg-transparent">
-            <li>
-                <a href="{{ route('employees.index') }}" class="text-[#828690] dark:text-white text-[13px]">
-                    <svg class="mb-[3px] mr-1 inline-block" width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    @lang('locale.partner', ['suffix'=>'s']) 
-                </a>
-            </li>
-            <li class="pl-2 before:content-['/'] before:font-[simple-line-icons] before:font-black before:text-xl before:leading-4 before:pr-2 before:float-left before:text-primary text-primary font-medium"><a>@lang('locale.edit')</a></li>
-        </ol>
-    </div>
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body relative p-[1.875rem]">
-                        <form action="{{ route('employees.update', $employee->id) }}" method="post">
-                            @csrf @method('PUT')
-                            <div class="row">	
-                                <div class="xl:w-full mb-4">
-                                    <label for="name" class="form-label">@lang('locale.name') <span class="text-danger">*</span></label>
-                                    <input type="text" name="name" value="{{ $employee->name }}" class="form-control relative text-[13px] text-body-color h-[2.813rem] border border-b-color block rounded-md py-1.5 px-3 duration-500 focus:border-primary dark:hover:border-b-color outline-none w-full" id="name" placeholder="@lang('locale.name')" required>
-                                </div>	
-                                <div class="xl:w-1/2 mb-4">
-                                    <label for="phone" class="form-label">@lang('locale.phone') <span class="text-danger">*</span></label>
-                                    <input type="tel" name="phone" value="{{ $employee->phone }}" class="form-control relative text-[13px] text-body-color h-[2.813rem] border border-b-color block rounded-md py-1.5 px-3 duration-500 focus:border-primary dark:hover:border-b-color outline-none w-full" id="phone" placeholder="@lang('locale.phone')" required>
-                                </div>
-                                <div class="xl:w-1/2 mb-4">
-                                    <label for="email" class="form-label">@lang('locale.email')</label>
-                                    <input type="email" name="email" value="{{ $employee->email }}" class="form-control relative text-[13px] text-body-color h-[2.813rem] border border-b-color block rounded-md py-1.5 px-3 duration-500 focus:border-primary dark:hover:border-b-color outline-none w-full" id="email" placeholder="@lang('locale.email')">
-                                </div>
-                                <div class="xl:w-1/2 mb-4">
-                                    <label for="address" class="form-label">@lang('locale.address') <span class="text-danger">*</span></label>
-                                    <input type="text" name="address" value="{{ $employee->address }}" class="form-control relative text-[13px] text-body-color h-[2.813rem] border border-b-color block rounded-md py-1.5 px-3 duration-500 focus:border-primary dark:hover:border-b-color outline-none w-full" id="address" placeholder="@lang('locale.address')" required>
-                                </div>
-                                <div class="xl:w-1/2 mb-4">
-                                    <label class="form-label">@lang('locale.gender')<span class="text-danger">*</span></label>
-                                    <select name="gender" class="nice-select style-1 py-1.5 px-3 bg-transparent text-[13px] font-normal outline-none relative focus:ring-0 border border-b-color text-[#a5a5a5] h-[2.813rem] leading-[1.813rem]" required>
-                                        <option data-display="@lang('locale.select')">@lang('locale.select')</option>
-                                        @foreach(['Mr','Mme'] as $item)
-                                            <option {{ $employee->gender == $item ? 'selected' : '' }}>{{ $item }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="xl:w-1/2 mb-4">
-                                    <label class="form-label">@lang('locale.diploma')<span class="text-danger">*</span></label>
-                                    <select name="diploma" class="nice-select style-1 py-1.5 px-3 bg-transparent text-[13px] font-normal outline-none relative focus:ring-0 border border-b-color text-[#a5a5a5] h-[2.813rem] leading-[1.813rem]" required>
-                                        <option data-display="@lang('locale.select')">@lang('locale.select')</option>
-                                        @foreach(['CEP','BTS','BEPC','BACCALAUREAT','LICENCE','MASTER','PhD', 'AUTRE'] as $item)
-                                            <option {{ $employee->diploma == $item ? 'selected' : '' }}>{{ $item }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="xl:w-1/2 mb-4">
-                                    <label class="form-label">@lang('locale.family')<span class="text-danger">*</span></label>
-                                    <select name="family" class="nice-select style-1 py-1.5 px-3 bg-transparent text-[13px] font-normal outline-none relative focus:ring-0 border border-b-color text-[#a5a5a5] h-[2.813rem] leading-[1.813rem]" required>
-                                        <option data-display="@lang('locale.select')">@lang('locale.select')</option>
-                                        @foreach(['CELIBATAIRE','MARIE(E)','DIVORCE(E)'] as $item)
-                                            <option {{ $employee->family == $item ? 'selected' : '' }}>{{ $item }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="xl:w-1/2 mb-4">
-                                    <label class="form-label">@lang('locale.contracttype')<span class="text-danger">*</span></label>
-                                    <select name="contracttype" class="nice-select style-1 py-1.5 px-3 bg-transparent text-[13px] font-normal outline-none relative focus:ring-0 border border-b-color text-[#a5a5a5] h-[2.813rem] leading-[1.813rem]" required>
-                                        <option data-display="@lang('locale.select')">@lang('locale.select')</option>
-                                        @foreach(['CDI','CDD','STAGE','AUTRE'] as $item)
-                                            <option {{ $employee->contracttype == $item ? 'selected' : '' }}>{{ $item }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="xl:w-1/2 mb-4">
-                                    <label for="position" class="form-label">@lang('locale.position') <span class="text-danger">*</span></label>
-                                    <input type="text" name="position" value="{{ $employee->position }}" class="form-control relative text-[13px] text-body-color h-[2.813rem] border border-b-color block rounded-md py-1.5 px-3 duration-500 focus:border-primary dark:hover:border-b-color outline-none w-full" id="position" placeholder="@lang('locale.position')" required>
-                                </div>
-                                <div class="xl:w-1/2 mb-4">
-                                    <label for="contractbegin" class="form-label">@lang('locale.contractbegin') <span class="text-danger">*</span></label>
-                                    <input type="date" name="contractbegin" value="{{ $employee->contractbegin }}" class="form-control relative text-[13px] text-body-color h-[2.813rem] border border-b-color block rounded-md py-1.5 px-3 duration-500 focus:border-primary dark:hover:border-b-color outline-none w-full" id="contractbegin" placeholder="@lang('locale.contractbegin')" required>
-                                </div>
-                                <div class="xl:w-1/2 mb-4">
-                                    <label for="contractend" class="form-label">@lang('locale.contractend') <span class="text-danger">*</span></label>
-                                    <input type="date" name="contractend" value="{{ $employee->contractend }}" class="form-control relative text-[13px] text-body-color h-[2.813rem] border border-b-color block rounded-md py-1.5 px-3 duration-500 focus:border-primary dark:hover:border-b-color outline-none w-full" id="contractend" placeholder="@lang('locale.contractend')" required>
-                                </div>
-                                <div class="xl:w-1/2 mb-4">
-                                    <label for="brut" class="form-label">@lang('locale.brut') <span class="text-danger">*</span></label>
-                                    <input type="number" name="brut" value="{{ $employee->brut }}" class="form-control relative text-[13px] text-body-color h-[2.813rem] border border-b-color block rounded-md py-1.5 px-3 duration-500 focus:border-primary dark:hover:border-b-color outline-none w-full" id="brut" placeholder="@lang('locale.brut')" min="100000" required>
-                                </div>
-                                <div class="xl:w-1/2 mb-4">
-                                    <label for="prime" class="form-label">@lang('locale.prime') <span class="text-danger">*</span></label>
-                                    <input type="number" name="prime" value="{{ $employee->prime }}" class="form-control relative text-[13px] text-body-color h-[2.813rem] border border-b-color block rounded-md py-1.5 px-3 duration-500 focus:border-primary dark:hover:border-b-color outline-none w-full" id="prime" value="0" min="0" placeholder="@lang('locale.prime')" required>
-                                </div>	
-                                <div class="xl:w-1/2 mb-4">
-                                    <label for="warrantyperson" class="form-label">@lang('locale.warrantyperson') <span class="text-danger">*</span></label>
-                                    <input type="text" name="warrantyperson" value="{{ $employee->warrantyperson }}" class="form-control relative text-[13px] text-body-color h-[2.813rem] border border-b-color block rounded-md py-1.5 px-3 duration-500 focus:border-primary dark:hover:border-b-color outline-none w-full" id="warrantyperson" placeholder="@lang('locale.warrantyperson')" required>
-                                </div>
-                                <div class="xl:w-1/2 mb-4">
-                                    <label for="warrantyphone" class="form-label">@lang('locale.warrantyphone') <span class="text-danger">*</span></label>
-                                    <input type="text" name="warrantyphone" value="{{ $employee->warrantyphone }}" class="form-control relative text-[13px] text-body-color h-[2.813rem] border border-b-color block rounded-md py-1.5 px-3 duration-500 focus:border-primary dark:hover:border-b-color outline-none w-full" id="warrantyphone" placeholder="@lang('locale.warrantyphone')" required>
-                                </div>
-                                <div class="xl:w-1/2 mb-4">
-                                    <label for="rib" class="form-label">@lang('locale.rib')</label>
-                                    <input type="text" name="rib" value="{{ $employee->rib }}" class="form-control relative text-[13px] text-body-color h-[2.813rem] border border-b-color block rounded-md py-1.5 px-3 duration-500 focus:border-primary dark:hover:border-b-color outline-none w-full" id="rib" placeholder="@lang('locale.rib')">
-                                </div>
-                                <div class="xl:w-1/2 mb-4">
-                                    <label for="bank" class="form-label">@lang('locale.bank')</label>
-                                    <input type="text" name="bank" value="{{ $employee->bank }}" class="form-control relative text-[13px] text-body-color h-[2.813rem] border border-b-color block rounded-md py-1.5 px-3 duration-500 focus:border-primary dark:hover:border-b-color outline-none w-full" id="bank" placeholder="@lang('locale.bank')">
-                                </div>	
-                                <div class="w-full">
-                                    <button class="btn btn-success xl:py-[0.719rem] py-2.5 xl:px-[1.563rem] px-4 duration-300 xl:text-[15px] text-[13px] font-medium rounded text-white bg-primary leading-5 inline-block border border-primary hover:bg-hover-primary offcanvas-close">@lang('locale.submit')</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="{{ route('employees.index') }}">@lang('locale.employee', ['suffix'=>'s'])</a></li>
+                        <li class="breadcrumb-item active">@lang('locale.edit')</li>
+                    </ol>
                 </div>
+                <h4 class="page-title">@lang('locale.employee', ['suffix'=>''])</h4>
             </div>
         </div>
     </div>
+    <!-- end page title -->
 
-    @push('scripts')
-	<script src="{{ asset('vendor/niceselect/js/jquery.nice-select.min.js') }}"></script>
-    @endpush
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <ul class="nav nav-tabs nav-bordered mb-3">
+                        <li class="nav-item">
+                            <a href="#employee-edit" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
+                                <i class="uil-document-layout-center"></i> @lang('locale.edit')
+                            </a>
+                        </li>
+                    </ul> <!-- end nav-->
+                    <div class="tab-content">
+                        <div class="tab-pane show active" id="employee-edit">
+                            <div class="card ribbon-box">
+                                <div class="ribbon ribbon-primary float-start"><span class="text-danger">*</span> @lang('locale.fields_required')</div>
+                                <div class="card-body">
+                                    <form action="{{ route('employees.update', $employee->id) }}" method="post">
+                                        @csrf @method('PUT')
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <div class="mb-2">
+                                                    <label for="fullname" class="col-col-form-label col-form-label-sm">@lang('locale.fullname') <span class="text-danger">*</span></label>
+                                                    <input type="text" value="{{ $employee->name }}" class="form-control form-control-sm" id="fullname" name="name" placeholder="@lang('locale.fullname')" required>
+                                                </div>                                       
+                                            </div>
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <div class="mb-2">
+                                                    <label class="col-form-label col-form-label-sm">@lang('locale.gender')<span class="text-danger">*</span></label>
+                                                    <select name="gender" class="form-select form-control-sm" required>
+                                                        <option value="">@lang('locale.select')</option>
+                                                        @foreach(['Mr'=>'Homme','Mme'=>'Femme'] as $key => $item)
+                                                            <option value="{{ $key }}" {{ $key == $employee->gender ? 'selected' : '' }}>{{ $item }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>                                        
+                                            </div>
+        
+                                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                                <div class="mb-2">
+                                                    <label for="phone" class="col-col-form-label col-form-label-sm">@lang('locale.phone') <span class="text-danger">*</span></label>
+                                                    <input type="tel" value="{{ $employee->phone }}" class="form-control form-control-sm" name="phone" id="phone" placeholder="@lang('locale.phone')" required>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="col-form-label col-form-label-sm">@lang('locale.family')<span class="text-danger">*</span></label>
+                                                    <select name="family" class="form-select form-control-sm" required>
+                                                        <option value="">@lang('locale.select')</option>
+                                                        @foreach(['CELIBATAIRE','MARIE(E)','DIVORCE(E)'] as $item)
+                                                            <option {{ $item == $employee->family ? 'selected' : '' }}>{{ $item }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div> 
+                                                <div class="mb-2">
+                                                    <label for="position" class="col-col-form-label col-form-label-sm">@lang('locale.position') <span class="text-danger">*</span></label>
+                                                    <input type="text" value="{{ $employee->name }}" class="form-control form-control-sm" name="position" id="position" placeholder="@lang('locale.position')" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                                <div class="mb-2">
+                                                    <label for="email" class="col-col-form-label col-form-label-sm">@lang('locale.email')</label>
+                                                    <input type="email" value="{{ $employee->email }}" class="form-control form-control-sm" name="email" id="email" placeholder="@lang('locale.email')">
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="diploma" class="col-form-label col-form-label-sm">@lang('locale.diploma') <span class="text-danger">*</span></label>
+                                                    <select id="diploma" name="diploma" class="form-select form-control-sm" required>
+                                                        <option value="">@lang('locale.select')</option>
+                                                        @foreach(['CEP','BTS','BEPC','BACCALAUREAT','LICENCE','MASTER','PhD', 'AUTRE'] as $item)
+                                                        <option {{ $item == $employee->diploma ? 'selected' : '' }}>{{ $item }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="contractbegin" class="col-form-label col-form-label-sm">@lang('locale.contractbegin') <span class="text-danger">*</span></label>
+                                                    <input type="date" value="{{ $employee->contractbegin }}" name="contractbegin" class="form-control form-control-sm" id="contractbegin" placeholder="@lang('locale.contractbegin')" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                                <div class="mb-2">
+                                                    <label for="address" class="col-form-label col-form-label-sm">@lang('locale.address') <span class="text-danger">*</span></label>
+                                                    <input type="text" value="{{ $employee->address }}" name="address" class="form-control form-control-sm" id="address" placeholder="@lang('locale.address')" required>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="contracttype" class="col-form-label col-form-label-sm">@lang('locale.contracttype') <span class="text-danger">*</span></label>
+                                                    <select id="contracttype" name="contracttype" class="form-select form-control-sm" required>
+                                                        <option value="">@lang('locale.select')</option>
+                                                        @foreach(['CDI','CDD','STAGE','AUTRE'] as $item)
+                                                        <option {{ $item == $employee->contracttype ? 'selected' : '' }}>{{ $item }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="contractend" class="col-form-label col-form-label-sm">@lang('locale.contractend') <span class="text-danger">*</span></label>
+                                                    <input type="date" value="{{ $employee->contractend }}" name="contractend" class="form-control form-control-sm" id="contractend" placeholder="@lang('locale.contractend')" required>
+                                                </div>
+                                            </div>                                    
+        
+                                            <div class="col-md-6 col-sm-6 col-xs-12">                                        
+                                                <div class="mb-2">
+                                                    <label for="brut" class="col-form-label col-form-label-sm">@lang('locale.brut') <span class="text-danger">*</span></label>
+                                                    <input type="number" value="{{ $employee->brut }}" name="brut" class="form-control form-control-sm" id="brut" placeholder="@lang('locale.brut')" min="100000" required>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="warrantyperson" class="col-form-label col-form-label-sm">@lang('locale.warrantyperson') <span class="text-danger">*</span></label>
+                                                    <input type="text" value="{{ $employee->warrantyperson }}" name="warrantyperson" class="form-control form-control-sm" id="warrantyperson" placeholder="@lang('locale.warrantyperson')" required>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="acompte" class="col-form-label col-form-label-sm">@lang('locale.acompte')</label>
+                                                    <input type="number" value="{{ $employee->acompte }}" name="acompte" class="form-control form-control-sm" id="acompte" placeholder="@lang('locale.acompte')">
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="cnss" class="col-form-label col-form-label-sm">@lang('locale.cnss')</label>
+                                                    <input type="number" value="{{ $employee->cnss }}" name="cnss" class="form-control form-control-sm" id="cnss" placeholder="@lang('locale.cnss')">
+                                                </div>                                                
+                                            </div>
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <div class="mb-2">
+                                                    <label for="prime" class="col-form-label col-form-label-sm">@lang('locale.prime') <span class="text-danger">*</span></label>
+                                                    <input type="number" value="{{ $employee->prime }}" name="prime" class="form-control form-control-sm" id="prime" value="0" min="0" placeholder="@lang('locale.prime')" required>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="warrantyphone" class="col-form-label col-form-label-sm">@lang('locale.warrantyphone') <span class="text-danger">*</span></label>
+                                                    <input type="text" value="{{ $employee->warrantyphone }}" name="warrantyphone" class="form-control form-control-sm" id="warrantyphone" placeholder="@lang('locale.warrantyphone')" required>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="sanction" class="col-form-label col-form-label-sm">@lang('locale.sanction') <span class="text-danger">*</span></label>
+                                                    <input type="number" value="{{ $employee->sanction }}" name="sanction" class="form-control form-control-sm" id="sanction" placeholder="@lang('locale.sanction')" required>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="rts" class="col-form-label col-form-label-sm">@lang('locale.rts')</label>
+                                                    <input type="number" value="{{ $employee->rts }}" name="rts" class="form-control form-control-sm" id="rts" placeholder="@lang('locale.rts')">
+                                                </div>                                                                                       
+                                            </div>   
+                                            
+                                            <div class="col-12">
+                                                <div class="mb-2">
+                                                    <label for="hastopay">@lang('locale.hastopay')</label>
+                                                    <input type="checkbox" name="hastopay" id="hastopay" {{ $employee->hastopay == 'true' ? 'checked' : '' }} data-switch="success"/>
+                                                    <label for="hastopay" data-on-label="@lang('locale.yes')" data-off-label="@lang('locale.no')"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" id="has-to-pay">
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <div class="mb-2">
+                                                    <label for="checkout" class="col-form-label col-form-label-sm">@lang('locale.bank')</label>
+                                                    <select id="checkout" name="checkout_id" class="form-select form-control-sm">
+                                                        <option value="">@lang('locale.select')</option>
+                                                        @foreach($checkouts as $item)
+                                                        <option value="{{ $item->id }}" {{ $employee->checkout_id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <div class="mb-2">
+                                                    <label for="rib" class="col-form-label col-form-label-sm">@lang('locale.rib')</label>
+                                                    <input type="text" value="{{ $employee->rib }}" name="rib" class="form-control form-control-sm" id="rib" placeholder="@lang('locale.rib')">
+                                                </div> 
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <button class="btn btn-block w-100 btn-soft-primary">@lang('locale.submit')</button>    
+                                            </div>                   	
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div> 
+                        <!-- end preview-->
+                    </div> 
+                    <!-- end tab-content-->
+                </div> 
+                <!-- end card body-->
+            </div> 
+            <!-- end card -->
+        </div>
+        <!-- end col-->
+    </div> 
+    <!-- end row-->
+
+    <script>
+        if($('#hastopay').is(':checked')) {
+            $('#has-to-pay').show();
+        } else {
+            $('#has-to-pay').hide();
+            $('#has-to-pay select').children('option:selected').prop('value', '');
+            $('#has-to-pay input').attr('value', '');
+        }
+        $('#hastopay').on('click', function () {
+            if($(this).is(':checked')) {
+                $('#has-to-pay').show();
+            } else {
+                $('#has-to-pay').hide();
+                $('#has-to-pay select').children('option:selected').prop('value', '');
+                $('#has-to-pay input').attr('value', '');
+            }
+        })
+    </script>
 </x-app-layout>
 

@@ -24,7 +24,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon $updated_at
  * @property string|null $deleted_at
  * 
- * @property Category $category
  * @property Collection|Dotation[] $dotations
  *
  * @package App\Models
@@ -33,18 +32,9 @@ class Equipment extends Model
 {
 	use SoftDeletes;
 
-	protected $casts = [
-		'price' => 'float',
-		'qty' => 'float',
-		'category_id' => 'int'
-	];
+	protected $casts = ['price' => 'float', 'qty' => 'float'];
 
 	protected $guarded = [];
-
-	public function category()
-	{
-		return $this->belongsTo(Category::class);
-	}
 
 	public function dotations()
 	{

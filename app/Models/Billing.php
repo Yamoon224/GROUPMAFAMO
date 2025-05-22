@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon $updated_at
  * @property string|null $deleted_at
  * 
- * @property Partner $partner
+ * @property Quotation $quotation
  *
  * @package App\Models
  */
@@ -34,17 +34,19 @@ class Billing extends Model
 
 	protected $casts = [
 		'amount' => 'float',
-		'discount' => 'float',
-		'arrears' => 'float',
-		'year' => 'int',
-		'month' => 'int',
-		'partner_id' => 'int'
+		'remain' => 'float',
+		'quotation_id' => 'int'
 	];
 
 	protected $guarded = [];
 
-	public function partner()
+	public function quotation()
 	{
-		return $this->belongsTo(Partner::class);
+		return $this->belongsTo(Quotation::class);
+	}
+
+	public function checkout()
+	{
+		return $this->belongsTo(Checkout::class);
 	}
 }

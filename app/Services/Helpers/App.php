@@ -155,3 +155,51 @@ use App\Models\Contract;
             ];
         }   
     }
+
+    /**
+     * @param string : value to format
+     * @param string : currency 
+     * @param string : sepator
+     * @return string : amount - sep - currency 
+     */
+    if (!function_exists('monthname')) 
+    {
+        function monthname($index) 
+        {
+            $months = app()->getLocale() == 'fr' ? [
+                1=>'Janvier', 2=>'Février', 3=>'Mars', 4=>'Avril', 5=>'Mai', 6=>'Juin',
+                7=>'Juillet', 8=>'Août', 9=>'Septembre', 10=>'Octobre', 11=>'Novembre', 12=>'Décembre'
+            ] : [
+                1=>'January', 2=>'February', 3=>'Mars', 4=>'April', 5=>'Mai', 6=>'June',
+                7=>'July', 8=>'August', 9=>'September', 10=>'October', 11=>'November', 12=>'December'
+            ];
+            return $months[(int) $index];
+        }   
+    }
+    
+    /**
+     * Retourne tous les jours entre deux dates, formatés en français.
+     *
+     * @param string $startDate Format 'Y-m-d'
+     * @param string $endDate Format 'Y-m-d'
+     * @param string $format Format Carbon, ex: 'l d F Y'
+     * @return array
+     */
+    if (!function_exists('getDaysBetweenDates')) {
+        function getDaysBetweenDates($startDate, $endDate, $format = 'l d F Y'): array
+        {
+            // Met la locale française
+            app()->setLocale('fr');
+            Carbon::setLocale('fr');
+    
+            $start = Carbon::parse($startDate);
+            $end = Carbon::parse($endDate);
+            $days = [];
+    
+            for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
+                $days[] = ucfirst($date->translatedFormat($format));
+            }
+    
+            return $days;
+        }
+    }

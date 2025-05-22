@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon $updated_at
  * @property string|null $deleted_at
  * 
- * @property Type|null $type
+ * @property Establishment|null $type
  * @property Collection|Booking[] $bookings
  * @property Collection|Image[] $images
  * @property Collection|Rate[] $rates
@@ -41,9 +41,9 @@ class Room extends Model
 
 	protected $guarded = [];
 
-	public function type()
+	public function establishment()
 	{
-		return $this->belongsTo(Type::class);
+		return $this->belongsTo(Establishment::class);
 	}
 
 	public function bookings()

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Services\Fpdf\App;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -12,7 +13,8 @@ class BookingController extends Controller
      */
     public function index()
     {
-        //
+        $bookings = Booking::all();
+        return view('admin.bookings.index', compact('bookings'));
     }
 
     /**
@@ -29,8 +31,8 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $data = $request->except('_token');
-        Booking::create( $data );
-        return redirect()->route('bookings.done')->with(['message'=>"Your Booking is done, we'll contact you asap to confirm"]);
+        $booking = Booking::create( $data );
+        return redirect()->route('rooms.bookings.done')->with(['message'=>"Your Booking is done, we'll contact you asap to confirm", 'booking'=>$booking->id, 'sejour'=>$booking->room->category == 'SEJOUR']);
     }
 
     /**
@@ -38,7 +40,8 @@ class BookingController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $booking = Booking::find($id);
+        return (new App)->bookingTable($booking);
     }
 
     /**

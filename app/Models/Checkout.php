@@ -35,4 +35,19 @@ class Checkout extends Model
 	{
 		return $this->hasMany(Payment::class);
 	}
+
+	public function employees()
+	{
+		return $this->hasMany(Employee::class);
+	}
+
+	public function cashflows()
+	{
+		return $this->hasMany(Cashflow::class);
+	}
+
+	public function billings()
+	{
+		return $this->hasMany(Billing::class);
+	}
 }

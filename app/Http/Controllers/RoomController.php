@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Room;
-use App\Models\Type;
 use App\Services\Fpdf\App;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Establishment;
+use Illuminate\Support\Facades\File;
 
 class RoomController extends Controller
 {
@@ -16,17 +16,8 @@ class RoomController extends Controller
     public function index()
     {
         $rooms = Room::orderByDesc('id')->get();
-        $types = Type::all();
-        return view('admin.rooms.index', compact('rooms', 'types'));
-    }
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function selectAll()
-    {
-        $rooms = Room::orderByDesc('id')->get();
-        return view('admin.rooms.cards', compact('rooms'));
+        $establishments = Establishment::all();
+        return view('admin.rooms.index', compact('rooms', 'establishments'));
     }
 
     /**
@@ -34,14 +25,16 @@ class RoomController extends Controller
      */
     public function search(Request $request)
     {
-        $rooms = Room::all();
+        $rooms = Room::orderBy('name')->get();
         if(!empty($request->search)) {
-            $rooms = Room::where('company', 'LIKE', '%'.$request->search.'%')
-                ->orwhere('type', 'LIKE', '%'.strtoupper($request->search).'%')
-                ->orwhere('phone', 'LIKE', '%'.$request->search.'%');
+            $rooms = Room::where('name', 'LIKE', '%'.$request->search.'%')
+                ->orwhere('category', 'LIKE', '%'.strtoupper($request->search).'%')
+                ->orwhere('price', 'LIKE', '%'.$request->search.'%')
+                ->orwhere('address', 'LIKE', '%'.$request->search.'%')
+                ->orderBy('name')
+                ->get();
         }
-        $rooms = $rooms->orderByDesc('id')->get();
-        return view('admin.rooms.search', compact('rooms'));
+        return view('components.rooms', compact('rooms'));
     }
 
     /**
@@ -49,7 +42,7 @@ class RoomController extends Controller
      */
     public function create()
     {
-        return view('admin.rooms.create');
+        
     }
 
     /**
@@ -59,7 +52,7 @@ class RoomController extends Controller
     {        
         $request->validate([
             'price' => 'required', 
-            'type_id' => 'required|int', 
+            'establishment_id' => 'required|int', 
             'address' => 'required|string|max:255', 
             'name' => 'required|string|max:155', 
             'photo' => 'image|mimes:jpg,jpeg,png|max:2048'
@@ -67,10 +60,10 @@ class RoomController extends Controller
         
         $data = $request->except(['_token']);
         if ($request->hasFile('front')) {
-            $data['front'] = 'storage/'.$request->file('front')->store('rooms', 'public');
+            $data['front'] = 'storages/'.$request->file('front')->store('rooms', 'public');
         }
         if ($request->hasFile('back')) {
-            $data['back'] = 'storage/'.$request->file('back')->store('rooms', 'public');
+            $data['back'] = 'storages/'.$request->file('back')->store('rooms', 'public');
         }
         Room::create($data);
         return redirect()->back();
@@ -91,8 +84,8 @@ class RoomController extends Controller
     public function edit(string $id)
     {
         $room = Room::find($id);
-        $types = Type::all();
-        return view('admin.rooms.edit', compact('room', 'types'));
+        $establishments = Establishment::all();
+        return view('admin.rooms.edit', compact('room', 'establishments'));
     }
 
     /**
@@ -102,7 +95,7 @@ class RoomController extends Controller
     {       
         $request->validate([
             'price' => 'required', 
-            'type_id' => 'required|int', 
+            'establishment_id' => 'required|int', 
             'address' => 'required|string|max:255', 
             'name' => 'required|string|max:155', 
         ]);
@@ -111,16 +104,16 @@ class RoomController extends Controller
         $data = $request->except(['_method', '_token']);
         if ($request->hasFile('front')) {
             $request->validate(['front' => 'image|mimes:jpg,jpeg,png|max:2048']);
-            $data['front'] = "storage/".$request->file('front')->store('rooms', 'public');
+            $data['front'] = "storages/".$request->file('front')->store('rooms', 'public');
             if ($room->front) {
-                Storage::disk('public')->delete($room->front);
+                File::delete($room->front);
             }
         }
         if ($request->hasFile('back')) {
             $request->validate(['back' => 'image|mimes:jpg,jpeg,png|max:2048']);
-            $data['back'] = "storage/".$request->file('back')->store('rooms', 'public');
+            $data['back'] = "storages/".$request->file('back')->store('rooms', 'public');
             if ($room->back) {
-                Storage::disk('public')->delete($room->back);
+                File::delete($room->back);
             }
         }
         $room->update($data);
@@ -134,10 +127,10 @@ class RoomController extends Controller
     public function destroy(string $id)
     {
         $room = Room::find($id);
-        Storage::disk('public')->delete($room->front);
-        Storage::disk('public')->delete($room->back);
+        File::delete($room->front);
+        File::delete($room->back);
         foreach($room->images as $item) {
-            Storage::disk('public')->delete($item->link);
+            File::delete($item->link);
             $item->delete();
         }
         $room->delete();

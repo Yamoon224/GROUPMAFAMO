@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use App\Models\Stoppage;
+use App\Services\Fpdf\App;
 use Illuminate\Http\Request;
 
 class StoppageController extends Controller
@@ -18,7 +19,7 @@ class StoppageController extends Controller
             ->whereDoesntHave('stoppages', fn ($item) =>$item->where('ended_at', '<', now()))
             ->get();
 
-        return view('admin.stoppages.index', compact('stoppages', 'employees'));
+        return view('admin.stoppages', compact('stoppages', 'employees'));
     }
 
     /**
@@ -87,5 +88,11 @@ class StoppageController extends Controller
         $stoppage = Stoppage::find($id);
         $stoppage->delete();
         return back()->with(['message'=>'']);
+    }
+
+    public function getStoppagesPdf()
+    {
+        $stoppages = Stoppage::all();
+        return (new App)->stoppagesTable($stoppages);
     }
 }

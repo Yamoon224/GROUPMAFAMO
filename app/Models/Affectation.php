@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon $updated_at
  * @property string|null $deleted_at
  * 
- * @property Contract $contract
+ * @property Quotation $quotation
  * @property Employee $employee
  *
  * @package App\Models
@@ -32,14 +32,14 @@ class Affectation extends Model
 
 	protected $casts = [
 		'employee_id' => 'int',
-		'contract_id' => 'int'
+		'quotation_id' => 'int'
 	];
 
 	protected $guarded = [];
 
 	public function contract()
 	{
-		return $this->belongsTo(Contract::class);
+		return $this->belongsTo(Quotation::class);
 	}
 
 	public function employee()

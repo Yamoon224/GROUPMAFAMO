@@ -29,12 +29,5 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Appointment extends Model
 {
 	use SoftDeletes;
-
-	protected $casts = [
-		'began_at' => 'datetime',
-		'ended_at' => 'datetime',
-		'expected_at' => 'datetime'
-	];
-
 	protected $guarded = [];
 }

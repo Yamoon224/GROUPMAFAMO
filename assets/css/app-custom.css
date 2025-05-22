@@ -1,0 +1,12 @@
+.card-bottom-primary { border-bottom: 2px solid #0a72b1 }
+.card-bottom-info { border-bottom: 2px solid #35b8e0 }
+.card-bottom-success { border-bottom: 2px solid #10c469 }
+.card-bottom-danger { border-bottom: 2px solid #ff5b5b }
+.card-bottom-warning { border-bottom: 2px solid #f9c851 }
+
+.card-top-primary { border-top: 2px solid #0a72b1 }
+.card-top-info { border-top: 2px solid #35b8e0 }
+.card-top-success { border-top: 2px solid #10c469 }
+.card-top-danger { border-top: 2px solid #ff5b5b }
+.card-top-warning { border-top: 2px solid #f9c851 }
+.bg-thead { background: #0088cc85 !important; }

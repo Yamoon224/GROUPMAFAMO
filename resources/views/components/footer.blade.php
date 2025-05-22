@@ -1,10 +1,10 @@
-<footer class="pt-lg-8 pt-5 bg-light">
-    <div class="border-top py-lg-6 py-4 border-secondary">
+<footer class="pt-lg-4 pt-2 bg-light">
+    <div class="border-top py-2 border-secondary">
         <div class="container">
-            <div class="row gy-4">
+            <div class="row gy-2">
                 <div class="col-lg-8">
                     <p class="mb-0">
-                        © {{ date('Y') }}, {{ env('APP_NAME') }} | <a href="https://codescandy.com/" target="_blank">EDITOSYSTEM</a>
+                        © {{ date('Y') }}, {{ env('APP_NAME') }} | <a href="https://editosyste.jss-gn.com/" target="_blank">EDITOSYSTEM</a>
                     </p>
                 </div>
                 <div class="col-lg-4 d-flex justify-content-lg-end">

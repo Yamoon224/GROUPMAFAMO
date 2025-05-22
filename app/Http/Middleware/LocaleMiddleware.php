@@ -15,7 +15,7 @@ class LocaleMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        app()->setLocale(auth()->check() ? auth()->user()->locale : app()->getLocale());
+        app()->setLocale(auth()->check() ? auth()->user()->locale : (session()->has('locale') ? session('locale') : app()->getLocale()));
         return $next($request);
     }
 }

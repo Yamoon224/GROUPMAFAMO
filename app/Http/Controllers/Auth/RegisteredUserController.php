@@ -20,6 +20,7 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
+        dd(Hash::make('Rh224@'));
         return view('auth.register');
     }
 

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Image;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class ImageController extends Controller
 {
@@ -36,7 +36,7 @@ class ImageController extends Controller
         
         $data = $request->except(['_token']);
         if ($request->hasFile('link')) {
-            $data['link'] = 'storage/'.$request->file('link')->store('photos', 'public');
+            $data['link'] = 'storages/'.$request->file('link')->store('photos', 'public');
         }
         Image::create($data);
         return redirect()->back();
@@ -69,8 +69,8 @@ class ImageController extends Controller
         $data = $request->except(['_method', '_token']);
         if ($request->hasFile('link')) {
             $request->validate(['link' => 'image|mimes:jpg,jpeg,png|max:2048']);
-            $data['link'] = "storage/".$request->file('link')->store('photos', 'public');
-            Storage::disk('public')->delete($image->link);
+            $data['link'] = "storages/".$request->file('link')->store('photos', 'public');
+            File::delete($image->link);
         }
         $image->update($data);
 
@@ -83,7 +83,7 @@ class ImageController extends Controller
     public function destroy(string $id)
     {
         $image = Image::find($id);
-        Storage::disk('public')->delete($image->link);
+        File::delete($image->link);
         $image->delete();
         return back()->with(['message'=>'']);
     }

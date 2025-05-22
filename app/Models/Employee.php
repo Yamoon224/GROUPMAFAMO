@@ -61,7 +61,6 @@ class Employee extends Model
 		'rts' => 'float',
 		'acompte' => 'float',
 		'sanction' => 'float',
-		'deleted' => 'datetime'
 	];
 
 	protected $guarded = [];
@@ -84,6 +83,11 @@ class Employee extends Model
 	public function stoppages()
 	{
 		return $this->hasMany(Stoppage::class);
+	}
+
+	public function checkout()
+	{
+		return $this->belongsTo(Checkout::class);
 	}
 
 	public function hasOngoingStoppage() 

@@ -13,7 +13,7 @@ class CheckoutController extends Controller
     public function index()
     {
         $checkouts = Checkout::orderByDesc('id')->get();
-        return view('admin.checkouts.index', compact('checkouts'));
+        return view('admin.checkouts', compact('checkouts'));
     }
 
     /**
@@ -21,7 +21,7 @@ class CheckoutController extends Controller
      */
     public function create()
     {
-        return view('admin.checkouts.create');
+
     }
 
     /**
@@ -29,7 +29,11 @@ class CheckoutController extends Controller
      */
     public function store(Request $request)
     {        
-        $request->validate(['name' => 'required|string|max:255']);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'ref' => 'required|string|max:255'
+        ]);
         
         $data = $request->except(['_token']);
         Checkout::create($data);
@@ -59,7 +63,11 @@ class CheckoutController extends Controller
      */
     public function update(Request $request, string $id)
     {       
-        $request->validate(['name' => 'required|string|max:255']);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'ref' => 'required|string|max:255'
+        ]);
 
         $checkout = Checkout::find($id);
         $data = $request->except(['_method', '_token']);

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Payment;
+use App\Models\Cashflow;
 use App\Models\Checkout;
 use App\Models\Employee;
-use App\Models\Payment;
+use App\Services\Fpdf\App;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -28,16 +30,17 @@ class PaymentController extends Controller
      */
     public function create()
     {
-        $checkouts = Checkout::all();
-        $employees = Employee::whereDate('contractbegin', '<=', date('Y-m-d'))
-            ->whereDate('contractend', '>=', date('Y-m-d'))
+        $month = strlen(request()->month) == 1 ? str_pad(request()->month, 2, 0, STR_PAD_LEFT) : request()->month;
+        $year = request()->year;
+        $checkout = request()->checkout;
+
+        $employees = Employee::whereDate('contractbegin', '<=', date($year.'-'.$month.'-d'))
+            ->whereDate('contractend', '>=', date($year.'-'.$month.'-d'))
             ->where('hastopay', true)
+            ->where('checkout_id', $checkout)
             ->orderByDesc('id')
             ->get();
-        $month = request()->month;
-        $year = request()->year;
-
-        return view('admin.payments.create', compact('employees', 'checkouts', 'year', 'month'));
+        return view('admin.payments.create', compact('employees', 'checkout', 'year', 'month'));
     }
 
     /**
@@ -48,17 +51,23 @@ class PaymentController extends Controller
         $data = $request->except('_token');
         if (!empty($data['payments'])) {
             foreach ($data['payments'] as $key => $value) {
-                Payment::create([
+                $payment = Payment::create([
                     'salary' => $data['salaries'][$key],
                     'prime' => $data['primes'][$key],
                     'month' => $data['month'],
                     'year' => $data['year'],
                     'employee_id' => $key,
-                    'checkout_id' => $data['checkouts'][$key]
+                    'checkout_id' => $data['checkout']
+                ]);
+
+                Cashflow::create([
+                    'label' => 'SORTIE',
+                    'amount' => $data['salaries'][$key] + $data['primes'][$key],
+                    'description' => __('locale.payment', ['suffix'=>''])." - ".$payment->employee->name,
+                    'checkout_id' => $data['checkout']
                 ]);
             }
-        }       
-
+        }      
         return redirect()->back();
     }
 
@@ -92,5 +101,17 @@ class PaymentController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function getPaymentPdf($year, $month, $checkout)
+    {
+        $employees = Employee::whereDate('contractbegin', '<=', date($year.'-'.$month.'-d'))
+            ->whereDate('contractend', '>=', date($year.'-'.$month.'-d'))
+            ->where('hastopay', true)
+            ->where('checkout_id', $checkout)
+            ->orderBy('name')
+            ->get();
+        $checkout = Checkout::find($checkout);
+        return (new App)->salariesTable($employees, compact('year', 'month', 'checkout'));
     }
 }

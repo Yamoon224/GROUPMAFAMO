@@ -15,12 +15,14 @@ use App\Http\Controllers\BookingController;
 |
 */
 
-Route::resource('bookings', BookingController::class)->only('store');
-Route::get('/bookings/done', [Controller::class, 'booking'])->name('bookings.done');
-Route::get('/', [Controller::class, 'welcome'])->middleware('locale')->name('welcome');
-Route::get('/{locale}/locale', [Controller::class, 'setLocaleApp'])->name('locales.change');
+Route::resource('bookings', BookingController::class)->only('store', 'show');
+Route::get('/rooms/bookings/done', [Controller::class, 'booking'])->middleware('locale')->name('rooms.bookings.done');
+Route::get('/', [Controller::class, 'home'])->middleware('locale')->name('home');
+Route::get('/{locale}/locale', [Controller::class, 'setLocaleSwitch'])->name('locales.switch');
 Route::get('/{currency}/currency', [Controller::class, 'setCurrency'])->name('currencies.change');
 Route::get('/{id}/room/{name}', [Controller::class, 'room'])->middleware('locale')->name('rooms.book');
-Route::get('/rooms/filter', [Controller::class, 'rooms'])->middleware('locale')->name('rooms.filter');
+Route::get('/rooms/filter', [Controller::class, '_rooms'])->middleware('locale')->name('rooms.filter');
+Route::get('/rooms', [Controller::class, 'rooms'])->middleware('locale')->name('rooms.index');
 
 
+require_once __DIR__.'/admin.php';

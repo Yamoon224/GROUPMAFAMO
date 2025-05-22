@@ -1,28 +1,43 @@
-<div class="modal fade fixed top-0 right-0 overflow-y-auto overflow-x-hidden dz-scroll w-full h-full z-[1055] translate-y-[-50px] dz-modal-box model-close" id="edit-checkout{{ $checkout->id }}">
-    <div class="modal-dialog modal-dialog-center max-w-[500px] mx-auto my-[1.75rem] w-auto relative pointer-events-none">
-        <div class="modal-content mx-[10px] flex flex-col relative rounded-md bg-white dark:bg-[#242424] w-full pointer-events-auto">
-            <div class="modal-header flex justify-between items-center flex-wrap py-4 px-[1.875rem] relative z-[2] border-b border-b-color">
-                <h1 class="modal-title text-base" id="exampleModalLabel1">@lang('locale.checkout', ['suffix'=>app()->getLocale() == 'en' ? 'y' : ''])</h1>
-                <button type="button" class="btn-close p-4"></button>
+<div id="edit-checkout{{ $checkout->id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="primary-header-modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title text-white" id="primary-header-modalLabel">@lang('locale.checkout', ['suffix'=>''])</h4>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
-            <div class="modal-body relative p-[1.875rem]">
-                <form action="{{ route('checkouts.update', $checkout->id) }}" method="post">
-                    @csrf @method('PUT')
+            <form action="{{ route('checkouts.update', $checkout->id) }}" method="post">
+                @method('PUT')
+                <div class="modal-body">
+                    @csrf 
                     <div class="row">
-                        <div class="xl:w-full mb-4">
-                            <label for="checkout" class="form-label">@lang('locale.checkout', ['suffix'=>'']) <span class="text-danger">*</span></label>
-                            <input type="text" name="name" value="{{ $checkout->name }}" class="form-control relative text-[13px] text-body-color h-[2.813rem] border border-b-color block rounded-md py-1.5 px-3 duration-500 focus:border-primary dark:hover:border-b-color outline-none w-full" id="checkout" placeholder="@lang('locale.checkout', ['suffix'=>app()->getLocale() == 'en' ? 'y' : ''])" required>
-                        </div>	
-                        <div class="w-full mb-3">
-                            <label class="form-label">@lang('locale.description')</label>
-                            <textarea rows="3" name="description" style="resize: none" class="form-control relative text-[13px] h-auto min-h-auto border border-b-color block rounded-md p-3 duration-500 focus:border-primary dark:hover:border-b-color outline-none w-full resize-y">{{ $checkout->description }}</textarea>
-                        </div>	
-                        <div class="w-full">
-                            <button class="btn btn-success xl:py-[0.719rem] py-2.5 xl:px-[1.563rem] px-4 duration-300 xl:text-[15px] text-[13px] font-medium rounded text-white bg-primary leading-5 inline-block border border-primary hover:bg-hover-primary offcanvas-close">@lang('locale.submit')</button>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="mb-2">
+                                <label for="checkout" class="col-col-form-label col-form-label-sm">@lang('locale.checkout', ['suffix'=>'']) <span class="text-danger">*</span></label>
+                                <input type="text" value="{{ $checkout->name }}" class="form-control form-control-sm" id="checkout" name="name" placeholder="@lang('locale.checkout', ['suffix'=>''])" required>
+                            </div>                                    
                         </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12">   
+                            <div class="mb-2">
+                                <label for="title" class="col-col-form-label col-form-label-sm">@lang('locale.title') <span class="text-danger">*</span></label>
+                                <input type="text" value="{{ $checkout->title }}" class="form-control form-control-sm" name="title" id="title" placeholder="@lang('locale.title')" required>
+                            </div>                                
+                        </div>
+                        <div class="col-12">   
+                            <div class="mb-2">
+                                <label for="ref" class="col-col-form-label col-form-label-sm">@lang('locale.ref') <span class="text-danger">*</span></label>
+                                <input type="text" value="{{ $checkout->ref }}" class="form-control form-control-sm" name="ref" id="ref" placeholder="@lang('locale.ref')" required>
+                            </div>  
+                            <div class="mb-2">
+                                <label for="description" class="col-col-form-label col-form-label-sm">@lang('locale.description')</label>
+                                <textarea class="form-control form-control-sm" name="description" id="description" placeholder="@lang('locale.description')">{{ $checkout->description }}</textarea>
+                            </div>                                
+                        </div>    
+                        <div class="col-12">
+                            <button class="btn btn-block w-100 btn-soft-primary">@lang('locale.submit')</button>    
+                        </div>                   	
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
