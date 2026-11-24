@@ -83,7 +83,7 @@ class Controller extends BaseController
     public function room($id, $name) 
     {
         $room = Room::firstWhere(compact('name', 'id'));
-        $rooms = Room::where(['status'=>'LIBRE', 'type_id'=>$room->type_id, 'category'=>$room->category])->orderByDesc('id')->get()->take(4);
+        $rooms = Room::where(['status'=>'LIBRE', 'establishment_id'=>$room->establishment_id, 'category'=>$room->category])->where('id', '!=', $room->id)->orderByDesc('id')->get()->take(4);
         return view('room', compact('rooms', 'room'));
     }
 
@@ -94,11 +94,11 @@ class Controller extends BaseController
             $rooms = $rooms->where('category', request()->category);
         }
         if(request()->type) {
-            $rooms = $rooms->where('type_id', request()->type);
+            $rooms = $rooms->where('establishment_id', request()->type);
         }
         
-        $rooms = $rooms->orderByDesc('id')->paginate(12);
-        return view('_rooms', compact('rooms'));
+        $rooms = $rooms->orderByDesc('id')->paginate(12)->withQueryString();
+        return view('rooms-search', compact('rooms'));
     }
     
     public function rooms() 

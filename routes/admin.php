@@ -22,6 +22,8 @@ use App\Http\Controllers\EstablishmentController;
 use App\Http\Controllers\CorrespondenceController;
 
 Route::prefix('admin')->group(function () {
+    Route::redirect('/', '/admin/dashboard');
+
     Route::get('/{locale}/locale', [Controller::class, 'setLocaleSwitch'])->name('admin.locales.switch');
 
     Route::middleware(['auth', 'verified', 'locale'])->group(function () {
@@ -66,6 +68,6 @@ Route::prefix('admin')->group(function () {
         Route::get('/list/correspondences/pdf', [CorrespondenceController::class, 'getCorrespondencesPdf'])->name('correspondences.pdf');
         Route::get('/list/stoppages/pdf', [StoppageController::class, 'getStoppagesPdf'])->name('stoppages.pdf');
     });
-});
 
-require_once __DIR__.'/auth.php';
+    require_once __DIR__.'/auth.php';
+});
