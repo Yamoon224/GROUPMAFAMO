@@ -30,7 +30,7 @@ return [
 
     'bcrypt' => [
         'rounds' => env('BCRYPT_ROUNDS', 12),
-        'verify' => true,
+        'verify' => false, // un hash non-bcrypt en base = échec de connexion, pas une erreur 500
     ],
 
     /*

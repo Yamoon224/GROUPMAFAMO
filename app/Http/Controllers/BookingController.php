@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\Room;
 use App\Services\Fpdf\App;
 use Illuminate\Http\Request;
 
@@ -30,9 +31,35 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->except('_token');
-        $booking = Booking::create( $data );
-        return redirect()->route('rooms.bookings.done')->with(['message'=>"Your Booking is done, we'll contact you asap to confirm", 'booking'=>$booking->id, 'sejour'=>$booking->room->category == 'SEJOUR']);
+        // Réservation ouverte aux visiteurs : aucun compte requis.
+        $data = $request->validate([
+            'room_id' => 'required|integer|exists:rooms,id',
+            'customer' => 'required|string|max:255',
+            'nationality' => 'required|string|max:100',
+            'phone' => 'required|string|max:30',
+            'email' => 'nullable|email|max:255',
+            'identifiant' => 'required|string|max:100',
+            'type_identifiant' => 'required|string|max:50',
+            'begin_date' => 'nullable|date|after_or_equal:today',
+            'end_date' => 'nullable|date|after_or_equal:begin_date',
+        ]);
+
+        $room = Room::findOrFail($data['room_id']);
+        abort_if($room->status !== 'LIBRE', 422, "Ce bien n'est plus disponible.");
+
+        // Le montant vient toujours du bien, jamais du navigateur.
+        $data['amount'] = $room->price;
+
+        $booking = Booking::create($data);
+
+        // Autorise ce visiteur (et lui seul) à télécharger son reçu.
+        session()->put('guest_booking', $booking->id);
+
+        return redirect()->route('rooms.bookings.done')->with([
+            'message' => __('locale.booking_message'),
+            'booking' => $booking->id,
+            'sejour' => $room->category == 'SEJOUR',
+        ]);
     }
 
     /**
@@ -40,7 +67,11 @@ class BookingController extends Controller
      */
     public function show(string $id)
     {
-        $booking = Booking::find($id);
+        // Visiteur non connecté : seulement sa propre réservation (évite d'énumérer les reçus).
+        if (! auth()->check()) {
+            abort_unless((string) session('guest_booking') === (string) $id, 403);
+        }
+        $booking = Booking::findOrFail($id);
         return (new App)->bookingTable($booking);
     }
 

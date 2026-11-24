@@ -15,7 +15,8 @@ use App\Http\Controllers\BookingController;
 |
 */
 
-Route::resource('bookings', BookingController::class)->only('store', 'show');
+Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+Route::get('/bookings/{id}/receipt', [BookingController::class, 'show'])->name('bookings.receipt');
 Route::get('/rooms/bookings/done', [Controller::class, 'booking'])->middleware('locale')->name('rooms.bookings.done');
 Route::get('/', [Controller::class, 'home'])->middleware('locale')->name('home');
 Route::get('/{locale}/locale', [Controller::class, 'setLocaleSwitch'])->name('locales.switch');

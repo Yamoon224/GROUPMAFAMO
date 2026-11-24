@@ -8,7 +8,7 @@
                 <p class="text-muted mb-4">@lang('locale.booking_thanks')</p>
                 <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
                     @if(session()->has('booking') && session('sejour'))
-                        <a class="mf-btn mf-btn-primary" href="{{ route('bookings.show', session('booking')) }}"><i class="bi bi-receipt"></i> @lang('locale.billing', ['suffix'=>''])</a>
+                        <a class="mf-btn mf-btn-primary" href="{{ route('bookings.receipt', session('booking')) }}"><i class="bi bi-receipt"></i> @lang('locale.billing', ['suffix'=>''])</a>
                     @endif
                     <a class="mf-btn mf-btn-outline" href="{{ route('home') }}">@lang('locale.booking_back_home')</a>
                 </div>

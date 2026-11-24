@@ -81,7 +81,13 @@
                         </div>
 
                         <hr class="my-4">
-                        <h2 class="h6 fw-bold mb-3">@lang('locale.room_book_title')</h2>
+                        <h2 class="h6 fw-bold mb-1">@lang('locale.room_book_title')</h2>
+                        <p class="small text-muted mb-3"><i class="bi bi-person-check text-success"></i> @lang('locale.booking_no_account')</p>
+                        @if($errors->any())
+                            <div class="alert alert-danger small py-2">
+                                <ul class="mb-0 ps-3">@foreach($errors->all() as $err)<li>{{ $err }}</li>@endforeach</ul>
+                            </div>
+                        @endif
 
                         <form method="POST" action="{{ route('bookings.store') }}" class="mf-form">
                             @csrf
@@ -91,34 +97,34 @@
                                 @if($room->category == 'SEJOUR')
                                     <div class="col-sm-6">
                                         <label class="form-label">@lang('locale.began_at') <span class="text-danger">*</span></label>
-                                        <input type="date" name="begin_date" class="form-control" min="{{ date('Y-m-d') }}" required>
+                                        <input type="date" name="begin_date" value="{{ old('begin_date') }}" class="form-control" min="{{ date('Y-m-d') }}" required>
                                     </div>
                                     <div class="col-sm-6">
                                         <label class="form-label">@lang('locale.ended_at') <span class="text-danger">*</span></label>
-                                        <input type="date" name="end_date" class="form-control" min="{{ date('Y-m-d') }}" required>
+                                        <input type="date" name="end_date" value="{{ old('end_date') }}" class="form-control" min="{{ date('Y-m-d') }}" required>
                                     </div>
                                 @else
                                     <div class="col-12"><div class="mf-note"><i class="bi bi-info-circle-fill"></i> @lang('locale.room_contact_note')</div></div>
                                 @endif
                                 <div class="col-sm-6">
                                     <label class="form-label">@lang('locale.customer', ['suffix' => '']) <span class="text-danger">*</span></label>
-                                    <input type="text" name="customer" class="form-control" autocomplete="name" required>
+                                    <input type="text" name="customer" value="{{ old('customer') }}" class="form-control" autocomplete="name" required>
                                 </div>
                                 <div class="col-sm-6">
                                     <label class="form-label">@lang('locale.nationality') <span class="text-danger">*</span></label>
-                                    <input type="text" name="nationality" class="form-control" required>
+                                    <input type="text" name="nationality" value="{{ old('nationality') }}" class="form-control" required>
                                 </div>
                                 <div class="col-sm-6">
                                     <label class="form-label">@lang('locale.phone') <span class="text-danger">*</span></label>
-                                    <input type="tel" name="phone" class="form-control" autocomplete="tel" required>
+                                    <input type="tel" name="phone" value="{{ old('phone') }}" class="form-control" autocomplete="tel" required>
                                 </div>
                                 <div class="col-sm-6">
                                     <label class="form-label">@lang('locale.email')</label>
-                                    <input type="email" name="email" class="form-control" autocomplete="email">
+                                    <input type="email" name="email" value="{{ old('email') }}" class="form-control" autocomplete="email">
                                 </div>
                                 <div class="col-sm-6">
                                     <label class="form-label">@lang('locale.identifiant') <span class="text-danger">*</span></label>
-                                    <input type="text" name="identifiant" class="form-control" required>
+                                    <input type="text" name="identifiant" value="{{ old('identifiant') }}" class="form-control" required>
                                 </div>
                                 <div class="col-sm-6">
                                     <label class="form-label">@lang('locale.type_identifiant') <span class="text-danger">*</span></label>

@@ -340,4 +340,7 @@
         'room_per' => "Price",
         'booking_thanks' => "Thank you for your trust.",
         'booking_back_home' => "Back to home",
+    
+        'booking_message' => "Your booking is saved, we will contact you very soon to confirm it.",
+        'booking_no_account' => "No account is needed to book.",
     );

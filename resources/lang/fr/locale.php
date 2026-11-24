@@ -353,4 +353,7 @@
         'room_per' => "Prix",
         'booking_thanks' => "Merci pour votre confiance.",
         'booking_back_home' => "Retour à l'accueil",
+    
+        'booking_message' => "Votre réservation est enregistrée, nous vous contacterons très vite pour la confirmer.",
+        'booking_no_account' => "Aucun compte n'est nécessaire pour réserver.",
     );
