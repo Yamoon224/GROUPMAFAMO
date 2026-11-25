@@ -89,10 +89,10 @@ class SeedDuplexQuotation extends Command
                 ['Planche', '', 250, 100000],
                 ['Bois rond', '', 500, 20000],
             ],
-            "Main d'œuvre" => [
-                ["Main d'œuvre fondation duplex", 'Ens', 1, 15000000],
-                ["Main d'œuvre élévation duplex", 'Ens', 1, 18000000],
-                ["Main d'œuvre coulage de la dalle", 'Ens', 1, 12000000],
+            "Main d'oeuvre" => [
+                ["Main d'oeuvre fondation duplex", 'Ens', 1, 15000000],
+                ["Main d'oeuvre élévation duplex", 'Ens', 1, 18000000],
+                ["Main d'oeuvre coulage de la dalle", 'Ens', 1, 12000000],
             ],
             'Divers' => [
                 ['Divers', 'Ens', 1, 15000000],

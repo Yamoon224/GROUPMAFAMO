@@ -966,7 +966,7 @@ class App extends Fpdf
             $this->setX(4);
             $this->setFont('Arial', 'IB', 10);
             $this->cell(8, 6, toroman(++$iteration), 1, 0, 'C');
-            $this->cell(236, 6, utf8_decode(strtoupper($category)), 1, 0, 'C');
+            $this->cell(236, 6, utf8_decode(mb_strtoupper($category)), 1, 0, 'C');
             $this->cell(45, 6, '', 1, 1, 'C');
             $sub = 0;
             foreach($details as $key => $item) {
@@ -987,7 +987,7 @@ class App extends Fpdf
             $this->setFillColor(211, 211, 211);
 
             $this->cell(8, 6, '', 1, 0, 'C', true);
-            $this->cell(236, 6, utf8_decode(toroman($iteration).'. MONTANT TOTAL '.strtoupper($category)), 1, 0, 'C', true);
+            $this->cell(236, 6, utf8_decode(toroman($iteration).'. MONTANT TOTAL '.mb_strtoupper($category)), 1, 0, 'C', true);
             $this->cell(45, 6, utf8_decode(moneyformat($sub)), 1, 1, 'R', true);
         }
 
