@@ -89,6 +89,9 @@ class SeedDuplexQuotation extends Command
                 ['Planche', '', 250, 100000],
                 ['Bois rond', '', 500, 20000],
             ],
+            'Divers' => [
+                ['Divers', 'Ens', 1, 15000000],
+            ],
         ];
     }
 
