@@ -14,13 +14,13 @@ class SeedDuplexQuotation extends Command
     protected $signature = 'quotation:duplex
                             {--partner= : ID du partenaire existant (défaut : Mme Marthe Fomba, créée si absente)}
                             {--began= : Date de début Y-m-d (défaut : aujourd\'hui)}
-                            {--ended= : Date de fin Y-m-d (défaut : +6 mois)}
+                            {--ended= : Date de fin Y-m-d (défaut : +2 mois)}
                             {--output= : Chemin du PDF (défaut : storage/app/public/devis-<ref>.pdf)}
                             {--force : Recrée le devis s\'il existe déjà (même titre et partenaire)}';
 
-    protected $description = 'Crée en base le devis "Réhabilitation d\'un duplex" et génère le PDF correspondant';
+    protected $description = 'Crée en base le devis de la rénovation de la maison à Fria et génère le PDF correspondant';
 
-    private const TITLE = "DEVIS QUANTITATIF ET ESTIMATIF - PROJET DE REHABILITATION D'UN DUPLEX";
+    private const TITLE = 'La rénovation de la maison à Fria';
 
     /**
      * Main d'oeuvre par phase (relevée sur les feuilles manuscrites, à vérifier).
@@ -128,7 +128,7 @@ class SeedDuplexQuotation extends Command
                 'status'      => 'NON DEBUTE',
                 'partner_id'  => $partner->id,
                 'began_at'    => $this->option('began') ?: now()->toDateString(),
-                'ended_at'    => $this->option('ended') ?: now()->addMonths(6)->toDateString(),
+                'ended_at'    => $this->option('ended') ?: now()->addMonths(2)->toDateString(),
             ]);
 
             foreach ($this->items() as $category => $rows) {
