@@ -22,17 +22,6 @@ class SeedDuplexQuotation extends Command
 
     private const TITLE = 'La rénovation de la maison à Fria';
 
-    /**
-     * Main d'oeuvre par phase (relevée sur les feuilles manuscrites, à vérifier).
-     * Le champ `workforce` du devis en est la somme.
-     */
-    private const WORKFORCE = [
-        'Fondation'            => 20000000,
-        'Élévation'            => 15000000,
-        'Élévation 1er étage'  => 15000000,
-        'Dalle'                => 12000000,
-    ];
-
     /** [catégorie => [[désignation, unité, quantité, prix unitaire], ...]] */
     private function items(): array
     {
@@ -89,6 +78,11 @@ class SeedDuplexQuotation extends Command
                 ['Planche', '', 250, 100000],
                 ['Bois rond', '', 500, 20000],
             ],
+            "Main d'œuvre" => [
+                ["Main d'œuvre fondation duplex", 'Ens', 1, 15000000],
+                ["Main d'œuvre élévation duplex", 'Ens', 1, 18000000],
+                ["Main d'œuvre coulage de la dalle", 'Ens', 1, 12000000],
+            ],
             'Divers' => [
                 ['Divers', 'Ens', 1, 15000000],
             ],
@@ -114,7 +108,8 @@ class SeedDuplexQuotation extends Command
                 $materials += $qty * $price;
             }
         }
-        $workforce = array_sum(self::WORKFORCE);
+        // La main d'oeuvre est saisie en lignes détaillées (catégorie ci-dessus), pas dans le champ workforce
+        $workforce = 0;
 
         $quotation = DB::transaction(function () use ($partner, $existing, $materials, $workforce) {
             if ($existing) {

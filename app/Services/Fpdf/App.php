@@ -996,9 +996,11 @@ class App extends Fpdf
         $this->setFont('Arial', 'IB', 10);
         $this->cell(70, 6, utf8_decode('TOTAL MONTANTS'), 1, 0, 'L', true);
         $this->cell(45, 6, utf8_decode(moneyformat($total)), 1, 1, 'R', true);
-        $this->setX(178);
-        $this->cell(70, 6, utf8_decode("MAIN D'OEUVRE"), 1, 0, 'L', true);
-        $this->cell(45, 6, utf8_decode(moneyformat($quotation->workforce)), 1, 1, 'R', true);
+        if ($quotation->workforce > 0) {
+            $this->setX(178);
+            $this->cell(70, 6, utf8_decode("MAIN D'OEUVRE"), 1, 0, 'L', true);
+            $this->cell(45, 6, utf8_decode(moneyformat($quotation->workforce)), 1, 1, 'R', true);
+        }
         $this->setX(178);
         $this->cell(70, 6, utf8_decode("TOTAL HT"), 1, 0, 'L', true);
         $this->cell(45, 6, utf8_decode(moneyformat($quotation->workforce+$total)), 1, 1, 'R', true);
