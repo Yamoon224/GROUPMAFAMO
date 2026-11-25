@@ -934,7 +934,7 @@ class App extends Fpdf
         exit;
     }
 
-    public function quotationTable($quotation) 
+    public function quotationTable($quotation, ?string $savePath = null) 
     {
         $this->addPage('L');
         $this->setTitle('CONTRACT #'.$quotation->ref);
@@ -1017,6 +1017,11 @@ class App extends Fpdf
         $this->ln(2);
         $this->getAccountantSignature();
         $this->getDirectorSignature(27);
+        if ($savePath) {
+            $this->output('F', $savePath);
+            return $savePath;
+        }
+
         $this->output();
         exit;
     }
