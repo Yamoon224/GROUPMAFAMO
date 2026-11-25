@@ -14,7 +14,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mf-crumb mb-0">
                     <li class="breadcrumb-item"><a href="{{ route('home') }}">@lang('locale.menu_home')</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('rooms.index') }}">@lang('locale.our_rooms')</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('public.rooms.index') }}">@lang('locale.our_rooms')</a></li>
                     @if($label)<li class="breadcrumb-item">{{ $label }}</li>@endif
                     <li class="breadcrumb-item active" aria-current="page">{{ $room->category }}</li>
                 </ol>
@@ -24,7 +24,7 @@
 
     <section class="mf-section pt-4">
         <div class="container">
-            <a href="{{ route('rooms.index') }}" class="mf-back mb-3 d-inline-flex align-items-center gap-2">
+            <a href="{{ route('public.rooms.index') }}" class="mf-back mb-3 d-inline-flex align-items-center gap-2">
                 <i class="bi bi-arrow-left"></i> @lang('locale.room_back')
             </a>
 

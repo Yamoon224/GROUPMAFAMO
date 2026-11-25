@@ -9,13 +9,13 @@ class App extends Fpdf
 {
     public function getQrCode() 
     {
-        $path = base_path('images/qrcode.svg');
+        $path = public_path('images/qrcode.svg');
 
         // Générer le QR code au format SVG
         QrCode::margin(2)
             ->backgroundColor(211,211,211, 80)
             ->size(100)
-            ->generate(url()->current(), $path);
+            ->generate(app()->runningInConsole() ? config('app.url') : url()->current(), $path);
         // Conversing from svg to png format
     	$png = new Imagick();
         $png->readImageBlob(file_get_contents($path));

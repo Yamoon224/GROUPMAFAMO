@@ -58,7 +58,7 @@
                 <ul class="navbar-nav mx-lg-auto gap-lg-1">
                     <li class="nav-item"><a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">@lang('locale.menu_home')</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('home') }}#services">@lang('locale.our_services')</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('rooms.*') ? 'active' : '' }}" href="{{ route('rooms.index') }}">@lang('locale.our_rooms')</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('public.rooms.*', 'rooms.book') ? 'active' : '' }}" href="{{ route('public.rooms.index') }}">@lang('locale.our_rooms')</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('home') }}#equipe">@lang('locale.our_team')</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('home') }}#contact">@lang('locale.menu_contact')</a></li>
                 </ul>

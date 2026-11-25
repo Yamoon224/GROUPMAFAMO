@@ -23,7 +23,7 @@ Route::get('/{locale}/locale', [Controller::class, 'setLocaleSwitch'])->name('lo
 Route::get('/{currency}/currency', [Controller::class, 'setCurrency'])->name('currencies.change');
 Route::get('/{id}/room/{name}', [Controller::class, 'room'])->middleware('locale')->name('rooms.book');
 Route::get('/rooms/filter', [Controller::class, '_rooms'])->middleware('locale')->name('rooms.filter');
-Route::get('/rooms', [Controller::class, 'rooms'])->middleware('locale')->name('rooms.index');
+Route::get('/rooms', [Controller::class, 'rooms'])->middleware('locale')->name('public.rooms.index');
 
 
 require_once __DIR__.'/admin.php';

@@ -11,7 +11,7 @@
                 <h5>@lang('locale.footer_links')</h5>
                 <ul>
                     <li><a href="{{ route('home') }}#services">@lang('locale.our_services')</a></li>
-                    <li><a href="{{ route('rooms.index') }}">@lang('locale.our_rooms')</a></li>
+                    <li><a href="{{ route('public.rooms.index') }}">@lang('locale.our_rooms')</a></li>
                     <li><a href="{{ route('home') }}#equipe">@lang('locale.our_team')</a></li>
                 </ul>
             </div>

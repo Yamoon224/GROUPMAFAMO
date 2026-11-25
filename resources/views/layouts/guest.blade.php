@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="{{ asset('assets/libs/simplebar/dist/simplebar.min.css') }}" />
         <!-- Theme CSS -->
         <link rel="stylesheet" href="{{ asset('assets/css/theme.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('assets/css/site.css') }}?v=2">
+        <link rel="stylesheet" href="{{ asset('assets/css/site.css') }}?v=3">
         @stack('styles')
     </head>
     <body>

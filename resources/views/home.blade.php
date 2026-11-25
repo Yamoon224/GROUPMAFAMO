@@ -24,7 +24,7 @@
                     <h1 class="mt-4 mb-3 reveal d1">@lang('locale.home_title_1') <em>@lang('locale.home_title_2')</em></h1>
                     <p class="lead mb-4 reveal d2">@lang('locale.home_subtitle')</p>
                     <div class="d-flex flex-column flex-sm-row gap-3 reveal d3">
-                        <a href="{{ route('rooms.index') }}" class="mf-btn mf-btn-primary">
+                        <a href="{{ route('public.rooms.index') }}" class="mf-btn mf-btn-primary">
                             <i class="bi bi-calendar2-check"></i> @lang('locale.home_cta_book')
                         </a>
                         <a href="#services" class="mf-btn mf-btn-ghost">
@@ -94,7 +94,7 @@
                     <span class="mf-eyebrow">@lang('locale.home_stay')</span>
                     <h2 class="mf-title mb-0">@lang('locale.our_rooms')</h2>
                 </div>
-                <a href="{{ route('rooms.index') }}" class="mf-btn mf-btn-outline">
+                <a href="{{ route('public.rooms.index') }}" class="mf-btn mf-btn-outline">
                     @lang('locale.see_all') <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
@@ -197,7 +197,7 @@
                     </div>
                     <div class="col-lg-4 d-flex flex-column flex-sm-row flex-lg-column gap-3 justify-content-lg-end">
                         <a href="tel:+224610421717" class="mf-btn mf-btn-primary"><i class="bi bi-telephone-fill"></i> +224 610 42 17 17</a>
-                        <a href="{{ route('rooms.index') }}" class="mf-btn mf-btn-ghost">@lang('locale.home_cta_book')</a>
+                        <a href="{{ route('public.rooms.index') }}" class="mf-btn mf-btn-ghost">@lang('locale.home_cta_book')</a>
                     </div>
                 </div>
             </div>
